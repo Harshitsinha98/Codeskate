@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Inter", system-ui, sans-serif;
+    color-scheme: light;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base text-ink font-sans antialiased;
+  }
+
+  ::selection {
+    background-color: rgba(249, 115, 22, 0.15);
+    color: #111827;
+  }
+
+  /* Accessible focus ring */
+  :focus-visible {
+    outline: 2px solid rgba(249, 115, 22, 0.6);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-sans;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    @apply text-ink-soft;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1200px] px-6 md:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-royal/20 bg-royal/5 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-royal;
+  }
+
+  /* Accent word — solid primary */
+  .text-gradient {
+    @apply text-royal;
+  }
+
+  /* White surface with a hairline border (navbar scrolled state) */
+  .glass {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: saturate(180%) blur(8px);
+    -webkit-backdrop-filter: saturate(180%) blur(8px);
+    border: 1px solid #E5E7EB;
+  }
+}
+
+@layer utilities {
+  /* Barely-there film-grain texture for hero surfaces. */
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.25;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Pure-white hero wash with a tiny orange glow near the action. */
+  .mesh-hero {
+    background-color: #FFFFFF;
+    background-image:
+      radial-gradient(36rem 22rem at 78% 12%, rgba(249, 115, 22, 0.06), transparent 65%),
+      radial-gradient(26rem 18rem at 12% 88%, rgba(249, 115, 22, 0.04), transparent 60%);
+  }
+
+  /* Faint blueprint grid for hero/section backdrops. */
+  .soft-grid {
+    background-image:
+      linear-gradient(rgba(17, 24, 39, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17, 24, 39, 0.03) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 0%, black 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Soft dotted texture for premium section backdrops. */
+  .dot-grid {
+    background-image: radial-gradient(rgba(17, 24, 39, 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 30%, transparent 85%);
+  }
+
+  /* Faint orange corner glow for accent sections. */
+  .accent-glow {
+    background-image:
+      radial-gradient(30rem 20rem at 85% 0%, rgba(249, 115, 22, 0.05), transparent 60%),
+      radial-gradient(28rem 18rem at 10% 100%, rgba(249, 115, 22, 0.04), transparent 60%);
+  }
+
+  /* Warm orange-tinted section wash — branded but soft. */
+  .warm-wash {
+    background-color: #FFFBF5;
+    background-image:
+      radial-gradient(38rem 24rem at 82% 6%, rgba(249, 115, 22, 0.10), transparent 62%),
+      radial-gradient(30rem 20rem at 8% 96%, rgba(234, 88, 12, 0.06), transparent 60%);
+  }
+
+  /* Deeper warm wash for higher-emphasis sections. */
+  .warm-wash-strong {
+    background-color: #FFF7ED;
+    background-image:
+      radial-gradient(42rem 26rem at 88% 0%, rgba(249, 115, 22, 0.16), transparent 60%),
+      radial-gradient(34rem 22rem at 6% 100%, rgba(234, 88, 12, 0.10), transparent 62%);
+  }
+
+  /* Tinted glass card — warm frosted surface with an orange hairline. */
+  .glass-warm {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 247, 237, 0.72));
+    backdrop-filter: saturate(160%) blur(6px);
+    -webkit-backdrop-filter: saturate(160%) blur(6px);
+    border: 1px solid rgba(249, 115, 22, 0.18);
+  }
+
+  /* Thin orange gradient divider between sections. */
+  .divider-orange {
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(249, 115, 22, 0.35) 30%,
+      rgba(234, 88, 12, 0.55) 50%,
+      rgba(249, 115, 22, 0.35) 70%,
+      transparent 100%
+    );
+  }
+
+  /* ---- Animated logo ---- */
+  .logo-tile {
+    box-shadow: 0 4px 14px -4px rgba(249, 115, 22, 0.55);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .logo:hover .logo-tile {
+    transform: rotate(-6deg) scale(1.06);
+  }
+  .logo-bolt {
+    transform-origin: 50% 50%;
+    animation: logo-flicker 4.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6));
+  }
+  .logo:hover .logo-bolt {
+    animation: logo-strike 0.6s ease-out;
+  }
+  .logo-sheen {
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.5) 48%,
+      transparent 62%
+    );
+    transform: translateX(-120%);
+  }
+  .logo:hover .logo-sheen {
+    animation: logo-sheen 0.85s ease-out;
+  }
+
+  @keyframes logo-flicker {
+    0%, 88%, 100% { opacity: 1; }
+    90% { opacity: 0.55; }
+    92% { opacity: 1; }
+    94% { opacity: 0.7; }
+    96% { opacity: 1; }
+  }
+  @keyframes logo-strike {
+    0% { transform: scale(1) rotate(0deg); }
+    35% { transform: scale(1.25) rotate(4deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes logo-sheen {
+    to { transform: translateX(120%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

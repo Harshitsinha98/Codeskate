@@ -1,0 +1,686 @@
+// AgencyOS — Prisma schema
+// Better Auth core models (user, session, account, verification) plus the
+// Order/Payment models needed for the checkout → Razorpay integration.
+// Remaining domain tables from docs/DATABASE.md are added in later phases.
+// Provider: PostgreSQL (per the approved decision).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+  orders   Order[]
+
+  // Delivery: a user can be the client of many projects and/or the assigned
+  // manager of many projects (future employee-assignment target).
+  clientProjects  Project[] @relation("ProjectClient")
+  managedProjects Project[] @relation("ProjectManager")
+
+  // Team-assignment: the projects a user is assigned to work on, and the
+  // assignment rows they created (as the acting admin).
+  assignments      ProjectAssignment[] @relation("AssignmentEmployee")
+  assignmentsMade  ProjectAssignment[] @relation("AssignmentAssignedBy")
+
+  // Notification Center: a user's in-app notifications + their channel prefs.
+  notifications           Notification[]
+  notificationPreferences NotificationPreference[]
+
+  // Sales CRM: leads this user owns (as the assigned sales person).
+  ownedLeads Lead[] @relation("LeadOwner")
+
+  // Finance & Billing: the invoices this user is billed on (as the client).
+  invoices Invoice[] @relation("InvoiceClient")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
+}
+
+/// A checkout order — created (status "pending") the moment the buyer starts a
+/// payment attempt, then transitioned to "paid" | "failed" | "cancelled" by
+/// the /api/checkout/orders/[orderId]/complete route. `billing`/`requirements`
+/// mirror @/types/checkout's CheckoutBillingInfo/CheckoutRequirements verbatim.
+/// Price fields are always SERVER-computed (via @/lib/pricing-engine), never
+/// trusted from the client.
+model Order {
+  id     String @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  serviceSlug String
+  packageId   String
+  addonIds    String[]
+  couponCode  String?
+
+  billing      Json
+  requirements Json
+
+  currency      String
+  subtotalMinor Int
+  discountMinor Int
+  taxMinor      Int
+  totalMinor    Int
+
+  status String @default("pending")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments Payment[]
+  project  Project?
+  invoice  Invoice?
+
+  @@index([userId])
+  @@index([status])
+  @@map("order")
+}
+
+/// One payment attempt against an Order, at a specific provider. Provider-
+/// agnostic by design (see @/lib/payments) — a future Stripe attempt would
+/// populate the same columns with provider = "stripe".
+model Payment {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  provider          String
+  providerOrderId   String
+  providerPaymentId String?
+  providerSignature String?
+
+  status        String
+  amountMinor   Int
+  currency      String
+  method        String?
+  failureReason String?
+  capturedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerOrderId])
+  @@index([orderId])
+  @@map("payment")
+}
+
+/// A delivery engagement, auto-created when an Order's payment is verified
+/// (see @/lib/project-service). Exactly one project per order (Order.project is
+/// 1:1). `code` is the human-facing unique Project ID (e.g. "PRJ-3F9K2A").
+/// Starts in status "pending_assignment" with no manager, ready for a future
+/// employee-assignment step to set `managerId` + project members.
+/// Kept intentionally lean (no organizationId), consistent with Order/Payment
+/// and the pre-auth checkout decision (ADR-001).
+model Project {
+  id      String @id @default(cuid())
+  code    String @unique
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  // The buyer (nullable — guest checkout has no user), and the assigned
+  // manager (null until an employee is assigned).
+  clientId String?
+  client   User?   @relation("ProjectClient", fields: [clientId], references: [id], onDelete: SetNull)
+
+  managerId String?
+  manager   User?   @relation("ProjectManager", fields: [managerId], references: [id], onDelete: SetNull)
+
+  name        String
+  serviceSlug String
+  serviceType String
+  status      String @default("pending_assignment")
+  progressPct Int    @default(0)
+
+  /// Sum of the template phases' estimated durations (days) — the planned
+  /// delivery window, set at provisioning time from the service template.
+  estimatedDurationDays Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  phases       ProjectPhase[]
+  milestones   ProjectMilestone[]
+  tasks        ProjectTask[]
+  activities   ProjectActivity[]
+  deliverables Deliverable[]
+  assignments  ProjectAssignment[]
+  invoice      Invoice?
+
+  @@index([status])
+  @@index([clientId])
+  @@index([managerId])
+  @@map("project")
+}
+
+/// An ordered stage of a project (Discovery, Design, …). Seeded from the
+/// service's project template (see @/config/project-templates) at creation time.
+model ProjectPhase {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  name   String
+  order  Int
+  status String @default("pending")
+
+  /// Planned length of this phase in days, from the service template.
+  estimatedDurationDays Int?
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  milestones ProjectMilestone[]
+  tasks      ProjectTask[]
+
+  deliverables Deliverable[]
+
+  @@unique([projectId, order])
+  @@index([projectId])
+  @@map("project_phase")
+}
+
+/// A billable/approval checkpoint within a phase, seeded from the template.
+model ProjectMilestone {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  phaseId String?
+  phase   ProjectPhase? @relation(fields: [phaseId], references: [id], onDelete: SetNull)
+
+  name          String
+  order         Int
+  status        String  @default("pending")
+  clientVisible Boolean @default(true)
+
+  dueDate    DateTime?
+  approvedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([phaseId])
+  @@map("project_milestone")
+}
+
+/// A default unit of work within a phase, seeded from the template. Assignee is
+/// null until an employee is assigned (future assignment step).
+model ProjectTask {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  phaseId String?
+  phase   ProjectPhase? @relation(fields: [phaseId], references: [id], onDelete: SetNull)
+
+  title       String
+  description String?
+  order       Int
+  status      String  @default("todo")
+  assigneeId  String?
+
+  // Assignment metadata. All optional — tasks are seeded from templates before
+  // any employee/schedule is attached.
+  priority       String    @default("medium")
+  dueDate        DateTime?
+  estimatedHours Int?
+  startedAt      DateTime?
+  completedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([phaseId])
+  @@index([assigneeId])
+  @@map("project_task")
+}
+
+/// Links an employee to a project with a role (many-to-many). One project has
+/// many members; one employee works many projects. `role` is a free string
+/// (see @/constants/project ASSIGNMENT_ROLE) so custom roles need no migration.
+model ProjectAssignment {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  employeeId String
+  employee   User   @relation("AssignmentEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+
+  role   String
+  status String @default("active")
+  notes  String?
+
+  assignedById String?
+  assignedBy   User?   @relation("AssignmentAssignedBy", fields: [assignedById], references: [id], onDelete: SetNull)
+  assignedAt   DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, employeeId, role])
+  @@index([projectId])
+  @@index([employeeId])
+  @@index([status])
+  @@map("project_assignment")
+}
+
+/// User-facing activity timeline entry for a project (created, assigned, phase
+/// advanced, …). Mirrors docs/DATABASE.md `activity_logs` in lean form.
+model ProjectActivity {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  verb     String
+  message  String
+  actorId  String?
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([projectId, createdAt])
+  @@map("project_activity")
+}
+
+/// A deliverable attached to a project (and optionally a specific phase) — a
+/// Figma link, a preview URL, a source-code archive, a handover PDF, etc.
+/// The deliverable is the stable, named artifact; its actual file/URL lives in
+/// versioned `DeliverableVersion` rows so history is preserved. `currentVersion`
+/// is the fast pointer to the latest one. Client-facing (read-only) once
+/// `clientVisible`; admins manage status (approve/reject) via the service.
+model Deliverable {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  phaseId String?
+  phase   ProjectPhase? @relation(fields: [phaseId], references: [id], onDelete: SetNull)
+
+  /// "file" (uploaded to storage) or "link" (external URL, no stored bytes).
+  kind          String  @default("file")
+  title         String
+  description   String?
+  status        String  @default("pending")
+  clientVisible Boolean @default(true)
+
+  /// Pointer to the latest version's number (1-based). 0 while empty.
+  currentVersion Int @default(0)
+
+  uploadedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions DeliverableVersion[]
+
+  @@index([projectId])
+  @@index([phaseId])
+  @@map("deliverable")
+}
+
+/// One immutable version of a deliverable. For kind="file" the bytes live in the
+/// storage provider under `storageKey` (see @/lib/storage); for kind="link" the
+/// artifact is `externalUrl` and file columns are null. Versions are append-only
+/// — a new upload adds a row and bumps `Deliverable.currentVersion`.
+model DeliverableVersion {
+  id            String      @id @default(cuid())
+  deliverableId String
+  deliverable   Deliverable @relation(fields: [deliverableId], references: [id], onDelete: Cascade)
+
+  version Int
+
+  /// File storage (kind="file").
+  storageKey  String?
+  fileName    String?
+  contentType String?
+  sizeBytes   Int?
+
+  /// External artifact (kind="link").
+  externalUrl String?
+
+  note         String?
+  uploadedById String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([deliverableId, version])
+  @@index([deliverableId])
+  @@map("deliverable_version")
+}
+
+/// An in-app notification for one recipient user. Generated exclusively by the
+/// ONE Notification Service (`@/lib/notifications`) — no module writes here
+/// directly. `type` is a value from @/constants/notification NOTIFICATION_TYPE;
+/// `audience` records whether it was routed to the user as client/employee/admin.
+/// `read`/`archived` back the notification center's read-state + archive; `data`
+/// carries a small JSON payload (projectId, code, link, …) for rendering + deep
+/// links. Channel delivery beyond in-app is future work (provider abstraction).
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type     String
+  audience String
+  title    String
+  body     String?
+
+  /// Small render/deep-link payload (projectId, projectCode, href, …).
+  data Json?
+
+  read     Boolean @default(false)
+  archived Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+
+  @@index([userId, archived, read])
+  @@index([userId, createdAt])
+  @@map("notification")
+}
+
+/// Per-user, per-channel notification preference. Only the in-app channel is
+/// honored today; email/whatsapp/push rows exist so the provider abstraction and
+/// UI are ready with no migration when those providers land. Absence of a row
+/// means "use the channel default" (in-app on, others off).
+model NotificationPreference {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// A NOTIFICATION_CHANNEL value (in_app | email | whatsapp | push).
+  channel String
+  enabled Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, channel])
+  @@index([userId])
+  @@map("notification_preference")
+}
+
+/// A sales CRM lead — the top of the funnel that ends in a paid project. Moves
+/// through the pipeline stages (see @/constants/crm LEAD_STAGE); a stage change
+/// logs through the CRM services, which emit realtime + generate a notification.
+/// `ownerId` is the assigned sales person (a User). Agency-internal — clients
+/// never read these. Lean (no organizationId), consistent with Order/Project.
+model Lead {
+  id      String  @id @default(cuid())
+  name    String
+  company String?
+  email   String
+  phone   String?
+
+  /// A LEAD_SOURCE value (website | referral | outbound | …).
+  source String @default("website")
+
+  /// Buyer's stated budget target, in minor units (optional).
+  budgetMinor  Int?
+  currency     String  @default("INR")
+  requirements String?
+  notes        String?
+
+  /// The assigned sales person. Null until claimed; SetNull if they leave.
+  ownerId String?
+  owner   User?   @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  /// A LEAD_STAGE value (new | contacted | … | won | lost | archived).
+  stage    String @default("new")
+  /// A LEAD_PRIORITY value (low | medium | high | urgent).
+  priority String @default("medium")
+
+  expectedCloseDate DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  proposals Proposal[]
+
+  @@index([stage])
+  @@index([ownerId])
+  @@index([priority])
+  @@index([createdAt])
+  @@map("lead")
+}
+
+/// A quotation generated for a lead from the EXISTING service catalog + packages
+/// (see @/config/catalog). Pricing is ALWAYS recomputed server-side via the
+/// shared @/lib/pricing-engine — `lineItems` is a rendered snapshot and the
+/// *Minor columns are the authoritative computed amounts (no second pricing
+/// model). When accepted, the proposal spins up a checkout Order through the
+/// existing Order Engine (`orderId` links the two); no duplicate checkout flow.
+model Proposal {
+  id     String @id @default(cuid())
+  number String @unique
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  title       String
+  serviceSlug String
+  packageId   String
+  addonIds    String[]
+
+  /// Snapshot of the priced quotation lines (kind/refId/label/amountMinor).
+  lineItems Json
+
+  couponCode String?
+
+  currency      String @default("INR")
+  subtotalMinor Int
+  discountMinor Int
+  taxMinor      Int
+  totalMinor    Int
+
+  notes String?
+
+  /// A PROPOSAL_STATUS value (draft | sent | viewed | accepted | rejected | expired).
+  status String @default("draft")
+
+  expiresAt DateTime?
+  sentAt    DateTime?
+  viewedAt  DateTime?
+  decidedAt DateTime?
+
+  /// The checkout order created on acceptance (Order Engine hand-off).
+  orderId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoice Invoice?
+
+  @@index([leadId])
+  @@index([status])
+  @@map("proposal")
+}
+
+/// A customer invoice — generated the moment a checkout Order's payment is
+/// captured (see @/lib/order-service → @/lib/invoice-service). Pricing is NEVER
+/// recomputed here: `lineItems` is a rendered snapshot from the SAME
+/// @/lib/pricing-engine breakdown the order was priced with, and the *Minor
+/// columns are the authoritative amounts copied from the order. `number` is the
+/// human-facing unique Invoice ID (e.g. "INV-7K2P9A"). One invoice per order
+/// (Order.invoice is 1:1). `status` is an INVOICE_STATUS value; `billing` mirrors
+/// the order's CheckoutBillingInfo. Lean (no organizationId), consistent with
+/// Order/Project/Proposal.
+model Invoice {
+  id     String @id @default(cuid())
+  number String @unique
+
+  /// The billed customer (nullable — guest checkout has no user; SetNull on leave).
+  clientId String?
+  client   User?   @relation("InvoiceClient", fields: [clientId], references: [id], onDelete: SetNull)
+
+  /// The source order (1:1), and the delivery project + originating proposal.
+  orderId String? @unique
+  order   Order?  @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  projectId String? @unique
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  proposalId String?  @unique
+  proposal   Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  /// Billing party snapshot (name/email/gst/address) mirroring the order billing.
+  billing   Json
+  gstNumber String?
+
+  /// Rendered priced-line snapshot (kind/refId/label/amountMinor).
+  lineItems Json
+  notes     String?
+
+  currency            String @default("INR")
+  subtotalMinor       Int
+  discountMinor       Int
+  taxMinor            Int
+  totalMinor          Int
+  /// Captured/refunded running totals (partial-payment/refund foundation).
+  amountPaidMinor     Int @default(0)
+  amountRefundedMinor Int @default(0)
+
+  /// An INVOICE_STATUS value (draft | pending | paid | partially_paid | refunded | cancelled).
+  status String @default("draft")
+
+  invoiceDate DateTime  @default(now())
+  dueDate     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions Transaction[]
+  ledgerEntries LedgerEntry[]
+
+  @@index([clientId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("invoice")
+}
+
+/// One money movement recorded against an invoice — a payment, partial payment,
+/// refund, or manual adjustment (see @/constants/finance TRANSACTION_TYPE).
+/// Provider-agnostic: `gateway`/`gatewayReference` capture the Razorpay (or a
+/// future provider's) payment/refund id. Written only through the Transaction
+/// Service (`@/lib/transaction-service`).
+model Transaction {
+  id        String  @id @default(cuid())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  /// A TRANSACTION_TYPE value; `status` is a TRANSACTION_STATUS value.
+  type   String
+  status String @default("success")
+
+  amountMinor Int
+  currency    String @default("INR")
+
+  gateway          String?
+  gatewayReference String?
+
+  notes   String?
+  actorId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([invoiceId, createdAt])
+  @@index([type])
+  @@map("transaction")
+}
+
+/// An immutable, append-only ledger entry — the financial journal of record.
+/// Every financial action (payment captured, refund issued, manual adjustment)
+/// appends exactly one entry; rows are NEVER updated or deleted (a correction is
+/// a new entry). `type` is a LEDGER_ENTRY_TYPE (credit | debit);
+/// `balanceAfterMinor` is the running recognised-revenue balance immediately
+/// after this entry. `referenceType`/`referenceId` trace the entry back to its
+/// source (invoice/transaction/refund/order). Written only through the Ledger
+/// Service (`@/lib/ledger-service`).
+model LedgerEntry {
+  id String @id @default(cuid())
+
+  /// A LEDGER_ENTRY_TYPE value (credit | debit).
+  type              String
+  amountMinor       Int
+  currency          String @default("INR")
+  balanceAfterMinor Int
+
+  /// A LEDGER_REFERENCE_TYPE value + the referenced row id.
+  referenceType String
+  referenceId   String
+
+  invoiceId String?
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  description String
+  actorId    String?
+
+  createdAt DateTime @default(now())
+
+  @@index([referenceType, referenceId])
+  @@index([invoiceId])
+  @@index([createdAt])
+  @@map("ledger_entry")
+}
+

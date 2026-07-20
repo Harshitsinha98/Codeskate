@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -n '1,60p' src/config/catalog/index.ts)",
+      "Bash(sed -n '1,40p' src/config/catalog/services.ts)",
+      "Bash(npm run *)",
+      "Bash(DATABASE_URL=\"postgresql://user:pass@localhost:5432/db\" BETTER_AUTH_SECRET=\"build-placeholder-secret-value-32chars-x\" npm run build)",
+      "Bash(sed -i '' 's/fill=\"#2563EB\"/fill=\"#F97316\"/' src/components/ui/Logo.tsx)",
+      "Bash(sed -i '' 's/border-b border-line bg-white py-20/border-b border-line bg-base py-20/' src/components/sections/ServicesShowcase.tsx src/components/sections/PricingPreview.tsx)",
+      "Bash(sed -i '' 's/className=\"border-b border-line bg-white\">/className=\"border-b border-line bg-base\">/' src/components/sections/ClientDashboardPreview.tsx)",
+      "Bash(sed -i '' 's|sticky top-0 z-50 w-full border-b bg-white/90 backdrop-blur|sticky top-0 z-50 w-full border-b bg-base/90 backdrop-blur|' src/components/layout/Navbar.tsx)",
+      "Bash(sed -i '' 's/fixed inset-0 top-0 z-40 bg-white lg:hidden/fixed inset-0 top-0 z-40 bg-base lg:hidden/' src/components/layout/Navbar.tsx)",
+      "Bash(ls src/app/icon* src/app/opengraph*)",
+      "Bash(grep -rn \"2563EB\\\\|1D4ED8\\\\|#0B1220\\\\|#111827\" src/app/icon.tsx src/app/opengraph-image.tsx)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"TSC EXIT: $?\")",
+      "Read(//tmp/**)",
+      "Bash(echo \"BUILD EXIT: $?\")",
+      "Bash(ls -la src/components/layout/AnnouncementBar.tsx)",
+      "Bash(cat src/components/layout/AnnouncementBar.tsx)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

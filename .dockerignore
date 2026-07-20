@@ -1,0 +1,29 @@
+# Build context exclusions — keep the image small and the build reproducible.
+node_modules
+.next
+.git
+.gitignore
+.storage
+npm-debug.log*
+yarn-error.log*
+
+# Local env / secrets — never bake into an image.
+.env
+.env.*
+!.env.example
+
+# Editor / OS cruft
+.vscode
+.idea
+.DS_Store
+
+# Docs & meta (not needed at runtime)
+README.md
+docs
+*.md
+
+# Test / CI artifacts
+coverage
+.github
+Dockerfile
+docker-compose.yml

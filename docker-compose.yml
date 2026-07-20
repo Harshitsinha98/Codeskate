@@ -1,0 +1,46 @@
+# Local production-like stack: the app + its PostgreSQL database.
+#
+# Usage:
+#   cp .env.example .env   # fill in secrets
+#   docker compose up --build
+#
+# The app reads configuration from `.env` (see `.env.example`). DATABASE_URL is
+# overridden here to point at the bundled `db` service on the compose network.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-codeskate}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-codeskate}
+      POSTGRES_DB: ${POSTGRES_DB:-codeskate}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-codeskate}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      # Point the app at the compose DB (overrides any host value).
+      DATABASE_URL: postgresql://${POSTGRES_USER:-codeskate}:${POSTGRES_PASSWORD:-codeskate}@db:5432/${POSTGRES_DB:-codeskate}
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+
+volumes:
+  db-data:
