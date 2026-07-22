@@ -4,7 +4,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { stats } from "@/lib/content";
 import { CTA } from "@/components/sections/CTA";
-import { Awards } from "@/components/sections/Awards";
 
 export const metadata: Metadata = {
   title: "Company — The team behind the work",
@@ -44,15 +43,6 @@ const values = [
     detail:
       "The best work builds on itself. We design systems and relationships meant to grow in value over years.",
   },
-];
-
-const team = [
-  { name: "Anaya Kapoor", role: "Founder & Design Director", initial: "A" },
-  { name: "Dev Sharma", role: "Principal Engineer", initial: "D" },
-  { name: "Rohan Mehta", role: "Head of Growth", initial: "R" },
-  { name: "Meera Nair", role: "Brand & Creative Lead", initial: "M" },
-  { name: "Isabel Ferreira", role: "Product Strategist", initial: "I" },
-  { name: "Arjun Rao", role: "Engineering Lead", initial: "A" },
 ];
 
 export default function AboutPage() {
@@ -126,37 +116,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="bg-surface/40 py-24 md:py-32">
-        <div className="container-x">
-          <SectionHeading
-            eyebrow="The people"
-            title="Senior hands on every project."
-            description="No account managers relaying messages. You work directly with the strategists, designers and engineers building your product."
-          />
-          <Stagger className="mt-14 grid grid-cols-2 gap-5 md:grid-cols-3">
-            {team.map((member) => (
-              <StaggerItem key={member.name}>
-                <div className="group overflow-hidden rounded-4xl border border-line bg-surface shadow-soft">
-                  <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-subtle">
-                    <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-royal text-3xl font-bold text-white shadow-soft">
-                      {member.initial}
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-display text-lg tracking-tight text-ink">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-sm text-ink-muted">{member.role}</p>
-                  </div>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-
-      <Awards />
       <CTA />
     </>
   );

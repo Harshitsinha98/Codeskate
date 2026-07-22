@@ -85,9 +85,19 @@ export async function currentBalanceMinor(db: Db = prisma): Promise<number> {
 /**
  * Append ONE immutable entry to the ledger, stamping the running balance. The
  * balance moves +amount on a credit, −amount on a debit. Never edits history.
+ *
+ * A transaction-scoped advisory lock serializes the read-balance → write-entry
+ * sequence: without it, two concurrent appends (e.g. a webhook racing the
+ * browser callback, or parallel refunds) could read the same prior balance and
+ * write a corrupted running total. Callers MUST pass a transaction client (both
+ * finance callers already wrap this in `prisma.$transaction`) so the lock is
+ * held until the append commits.
  */
 export async function appendEntry(input: AppendLedgerInput, db: Db = prisma): Promise<LedgerEntry> {
   const currency = input.currency ?? "INR";
+  // Serialize all ledger appends within the caller's transaction. The lock is
+  // released automatically when the transaction commits or rolls back.
+  await db.$executeRaw`SELECT pg_advisory_xact_lock(4815162342)`;
   const previous = await currentBalanceMinor(db);
   const delta = input.type === LEDGER_ENTRY_TYPE.CREDIT ? input.amountMinor : -input.amountMinor;
   const balanceAfterMinor = previous + delta;

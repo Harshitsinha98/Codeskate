@@ -11,6 +11,7 @@ import { NotificationBell } from "@/features/notifications/components/Notificati
 
 export const metadata = {
   title: "Workspace — AgencyOS",
+  robots: { index: false, follow: false },
 };
 
 /**

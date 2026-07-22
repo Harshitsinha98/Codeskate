@@ -41,7 +41,7 @@ export default function ProcessPage() {
       <PageHeader
         eyebrow="How we work"
         title="A process built to de-risk ambition."
-        description="Great work is rarely an accident. Ours comes from a deliberate, transparent process — refined over 150+ engagements — that turns big goals into shipped, measurable outcomes."
+        description="Great work is rarely an accident. Ours comes from a deliberate, transparent process that turns big goals into shipped, measurable outcomes."
       />
 
       <ProcessTimeline />

@@ -1,8 +1,8 @@
 name: CI
 
 # Fail-fast pipeline: install → prisma generate → migrate deploy (against an
-# ephemeral Postgres) → type check → lint → build. Each step gates the next; the
-# first failure stops the job.
+# ephemeral Postgres) → type check → lint → test → build. Each step gates the
+# next; the first failure stops the job.
 
 on:
   push:
@@ -65,6 +65,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Test
+        run: npm test
 
       - name: Build
         run: npm run build

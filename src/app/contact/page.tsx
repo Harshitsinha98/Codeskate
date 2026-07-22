@@ -89,31 +89,36 @@ export default function ContactPage() {
               {/* Office / map */}
               <Reveal delay={0.2}>
                 <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-soft">
-                  <div className="relative h-40 overflow-hidden bg-subtle">
-                    {/* stylized map grid */}
-                    <div
-                      className="absolute inset-0 opacity-[0.12]"
-                      style={{
-                        backgroundImage:
-                          "linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px)",
-                        backgroundSize: "28px 28px",
-                      }}
+                  <div className="relative h-48 overflow-hidden bg-subtle">
+                    <iframe
+                      title="CodeSkate office location"
+                      src={site.address.mapEmbed}
+                      className="absolute inset-0 h-full w-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
                     />
-                    <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center">
-                      <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-royal text-white shadow-lift">
-                        <MapPin className="h-4 w-4" />
-                      </span>
-                    </span>
                   </div>
                   <div className="p-6">
                     <span className="text-xs font-medium uppercase tracking-[0.16em] text-ink-faint">
                       Where we work
                     </span>
-                    <p className="mt-2 text-sm text-ink-soft">
-                      {site.address.line1}
-                      <br />
-                      {site.address.line2}
+                    <p className="mt-2 flex items-start gap-2 text-sm text-ink-soft">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-royal" />
+                      <span>
+                        {site.address.line1}
+                        <br />
+                        {site.address.line2}
+                      </span>
                     </p>
+                    <a
+                      href={site.address.mapLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-block text-xs font-medium text-royal hover:underline"
+                    >
+                      {site.address.plusCode} →
+                    </a>
                   </div>
                 </div>
               </Reveal>

@@ -10,6 +10,7 @@ import { NotificationBell } from "@/features/notifications/components/Notificati
 
 export const metadata = {
   title: "Client Dashboard",
+  robots: { index: false, follow: false },
 };
 
 /**

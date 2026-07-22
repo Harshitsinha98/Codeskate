@@ -16,9 +16,13 @@ export const site = {
   whatsapp: "+919653043939",
   calendly: "https://calendly.com/codeskate/intro",
   address: {
-    line1: "Remote-first studio",
-    line2: "Serving clients across India & worldwide",
+    line1: "225 Tower B, Surya Heights Apartment",
+    line2: "Ghaziabad, Uttar Pradesh, India",
     country: "India",
+    plusCode: "JFJ2+55 Ghaziabad, Uttar Pradesh",
+    mapEmbed:
+      "https://www.google.com/maps?q=JFJ2%2B55%20Ghaziabad%2C%20Uttar%20Pradesh&output=embed",
+    mapLink: "https://maps.google.com/?q=JFJ2%2B55+Ghaziabad,+Uttar+Pradesh",
   },
   socials: [
     { label: "GitHub", href: "https://github.com/Harshitsinha98" },

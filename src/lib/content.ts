@@ -1,6 +1,6 @@
 /**
  * Marketing content — case studies, testimonials, stats, industries,
- * process, FAQs, awards and clients. All fictional but concrete.
+ * process, FAQs and clients.
  */
 
 export const stats = [
@@ -8,14 +8,6 @@ export const stats = [
   { value: "4", label: "Live in production" },
   { value: "5", label: "Industries served" },
   { value: "100%", label: "Full ownership" },
-];
-
-/** Home trust bar — clean, customer-facing stats. */
-export const trustStats = [
-  { value: "150+", label: "Projects Delivered" },
-  { value: "40+", label: "Happy Clients" },
-  { value: "9", label: "Years Experience" },
-  { value: "24/7", label: "Support" },
 ];
 
 /** "Why CodeSkate" reasons — simple icon cards on the home page. */
@@ -237,14 +229,6 @@ export const process = [
 
 // Pricing FAQs are centralized in `@/lib/config/faq` (single source of truth).
 export { PRICING_FAQS as faqs } from "@/lib/config/faq";
-
-export const awards = [
-  { title: "Awwwards", detail: "Site of the Day ×4", year: "2023–25" },
-  { title: "CSS Design Awards", detail: "Best UI / UX", year: "2024" },
-  { title: "Clutch", detail: "Top B2B Company", year: "2025" },
-  { title: "FWA", detail: "Site of the Day", year: "2024" },
-  { title: "Webby", detail: "Nominee, Best Studio", year: "2025" },
-];
 
 export const techStack = [
   "Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion",

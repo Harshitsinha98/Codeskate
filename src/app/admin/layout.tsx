@@ -10,6 +10,7 @@ import { NotificationBell } from "@/features/notifications/components/Notificati
 
 export const metadata = {
   title: "Admin — AgencyOS",
+  robots: { index: false, follow: false },
 };
 
 const NAV = [

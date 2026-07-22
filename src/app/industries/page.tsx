@@ -15,8 +15,8 @@ export default function IndustriesPage() {
     <>
       <PageHeader
         eyebrow="Industries"
-        title="We've seen your problem before."
-        description="Nine years and 150+ engagements across the sectors that move fastest. That pattern recognition means you skip the expensive mistakes and get to what works, sooner."
+        title="We build for the sectors that move fastest."
+        description="From fintech to ecommerce, we bring product thinking and engineering depth to every domain — so you skip the expensive mistakes and get to what works, sooner."
       />
       <Industries />
       <CTA />

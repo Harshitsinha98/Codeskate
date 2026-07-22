@@ -155,6 +155,32 @@ export function Navbar() {
                   />
                 )}
               </button>
+
+              {/* Resources panel — anchored under the button */}
+              <AnimatePresence>
+                {openMenu === "resources" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.22, ease: EASE }}
+                    className="absolute right-0 top-full z-50 mt-2 w-72"
+                  >
+                    <div className="overflow-hidden rounded-3xl border border-line bg-white/95 p-2 shadow-lift backdrop-blur-xl">
+                      {resourceLinks.map((r) => (
+                        <Link
+                          key={r.href}
+                          href={r.href}
+                          className="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium text-ink-soft transition-colors hover:bg-subtle hover:text-ink"
+                        >
+                          {r.label}
+                          <ArrowRight className="h-4 w-4 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-royal" />
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </li>
           </ul>
 
@@ -190,9 +216,9 @@ export function Navbar() {
           </button>
         </nav>
 
-        {/* Dropdown panels */}
+        {/* Services mega menu */}
         <AnimatePresence>
-          {openMenu && (
+          {openMenu === "services" && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -202,57 +228,42 @@ export function Navbar() {
               onMouseEnter={() => setOpenMenu(openMenu)}
             >
               <div className="container-x">
-                {openMenu === "services" ? (
-                  <div className="mt-2 overflow-hidden rounded-3xl border border-line bg-white/95 p-3 shadow-lift backdrop-blur-xl">
-                    <div className="grid grid-cols-2 gap-1">
-                      {services.map((s) => (
-                        <Link
-                          key={s.slug}
-                          href={`/services/${s.slug}`}
-                          className="group flex items-start gap-3 rounded-2xl p-3.5 transition-colors hover:bg-subtle"
-                        >
-                          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-line bg-subtle text-xs font-bold tabular-nums text-royal transition-colors group-hover:border-royal group-hover:bg-royal group-hover:text-white">
-                            {s.index}
-                          </span>
-                          <span className="flex-1">
-                            <span className="block text-sm font-semibold text-ink">
-                              {s.title}
-                            </span>
-                            <span className="mt-0.5 block text-xs leading-relaxed text-ink-muted">
-                              {s.tagline}
-                            </span>
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="m-1 mt-2 flex items-center justify-between rounded-2xl bg-subtle px-5 py-4">
-                      <div>
-                        <p className="text-sm font-semibold text-ink">
-                          Not sure what you need?
-                        </p>
-                        <p className="text-xs text-ink-muted">
-                          Book a free consultation and we&apos;ll map it out with you.
-                        </p>
-                      </div>
-                      <Button href="/contact" variant="primary" size="md" arrow>
-                        Book Consultation
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-2 w-72 overflow-hidden rounded-3xl border border-line bg-white/95 p-2 shadow-lift backdrop-blur-xl">
-                    {resourceLinks.map((r) => (
+                <div className="mt-2 overflow-hidden rounded-3xl border border-line bg-white/95 p-3 shadow-lift backdrop-blur-xl">
+                  <div className="grid grid-cols-2 gap-1">
+                    {services.map((s) => (
                       <Link
-                        key={r.href}
-                        href={r.href}
-                        className="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium text-ink-soft transition-colors hover:bg-subtle hover:text-ink"
+                        key={s.slug}
+                        href={`/services/${s.slug}`}
+                        className="group flex items-start gap-3 rounded-2xl p-3.5 transition-colors hover:bg-subtle"
                       >
-                        {r.label}
-                        <ArrowRight className="h-4 w-4 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-royal" />
+                        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-line bg-subtle text-xs font-bold tabular-nums text-royal transition-colors group-hover:border-royal group-hover:bg-royal group-hover:text-white">
+                          {s.index}
+                        </span>
+                        <span className="flex-1">
+                          <span className="block text-sm font-semibold text-ink">
+                            {s.title}
+                          </span>
+                          <span className="mt-0.5 block text-xs leading-relaxed text-ink-muted">
+                            {s.tagline}
+                          </span>
+                        </span>
                       </Link>
                     ))}
                   </div>
-                )}
+                  <div className="m-1 mt-2 flex items-center justify-between rounded-2xl bg-subtle px-5 py-4">
+                    <div>
+                      <p className="text-sm font-semibold text-ink">
+                        Not sure what you need?
+                      </p>
+                      <p className="text-xs text-ink-muted">
+                        Book a free consultation and we&apos;ll map it out with you.
+                      </p>
+                    </div>
+                    <Button href="/contact" variant="primary" size="md" arrow>
+                      Book Consultation
+                    </Button>
+                  </div>
+                </div>
               </div>
             </motion.div>
           )}
