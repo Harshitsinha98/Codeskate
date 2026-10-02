@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 /** Selected work — large screenshot cards, outcome first. Light section. */
 export function WorkShowcase() {
   const [lead, ...rest] = caseStudies.slice(0, 3);
+  const more = caseStudies.slice(3);
 
   return (
     <section className="relative bg-base py-24 md:py-32">
@@ -36,6 +37,29 @@ export function WorkShowcase() {
             </Reveal>
           ))}
         </div>
+
+        {more.length > 0 && (
+          <Reveal delay={0.1}>
+            <div className="mt-5 flex flex-col gap-4 rounded-3xl border border-line px-6 py-5 md:flex-row md:items-center">
+              <span className="shrink-0 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-muted">
+                Also shipped
+              </span>
+              <div className="flex flex-1 flex-wrap gap-2">
+                {more.map((s) => (
+                  <Link
+                    key={s.slug}
+                    href={`/work/${s.slug}`}
+                    className="group inline-flex items-center gap-2 rounded-full border border-line bg-subtle py-1.5 pl-3.5 pr-3 text-sm text-ink transition-colors hover:border-ink/20 hover:bg-surface"
+                  >
+                    {s.client}
+                    <span className="font-mono text-[0.65rem] text-ink-faint">{caseMeta[s.slug]?.industry}</span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-ink-faint transition-colors group-hover:text-royal" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        )}
       </div>
     </section>
   );

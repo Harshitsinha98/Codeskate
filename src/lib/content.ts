@@ -4,9 +4,9 @@
  */
 
 export const stats = [
-  { value: "5+", label: "Products shipped" },
-  { value: "4", label: "Live in production" },
-  { value: "5", label: "Industries served" },
+  { value: "9", label: "Products shipped" },
+  { value: "9", label: "Live in production" },
+  { value: "6", label: "Industries served" },
   { value: "100%", label: "Full ownership" },
 ];
 
@@ -55,7 +55,8 @@ export const dashboardFlow = [
 ];
 
 export const clients = [
-  "Saran Tax Solution", "Pragat Hanuman Ji", "Shivis Elegance",
+  "Divine Karigari", "Kuber Maheshwari", "Align Aesthetic Dental Hub",
+  "Shivis Elegance", "Saran Tax Solution", "Pragat Hanuman Ji",
 ];
 
 export type CaseStudy = {
@@ -78,6 +79,141 @@ export type CaseStudy = {
 };
 
 export const caseStudies: CaseStudy[] = [
+  {
+    slug: "divine-karigari",
+    client: "Divine Karigari",
+    title: "A gifting marketplace with a full commerce back office",
+    category: "Ecommerce · Full-stack platform",
+    year: "2026",
+    cover: "from-pink-500 via-rose-500 to-royal",
+    url: "https://divine-karigari.vercel.app",
+    summary:
+      "A handcrafted and personalised gifts store with a role-aware admin portal — catalog with variants and personalisation, Razorpay checkout, Shiprocket shipping and returns, wallet credit and automated email, SMS and abandoned-cart flows.",
+    problem:
+      "An artisan gifting brand needed far more than a storefront: personalised products, gifting occasions, shipping across India, returns, and a team that could run orders and inventory without touching code.",
+    research:
+      "We mapped the full order lifecycle — browse, personalise, pay, ship, track, return, refund — and designed the data model around it first, so every later feature had a home.",
+    approach:
+      "A customer store with personalisation, wishlist, wallet and order tracking, plus a separate admin portal with staff roles (super admin, order manager, inventory manager) for products, coupons, customers, returns, reviews and reports.",
+    build:
+      "Next.js and TypeScript on PostgreSQL with a 26-model Prisma schema and 90 API routes. Razorpay with server-side verification and webhooks, Shiprocket for AWB, tracking and returns, Resend email, MSG91 SMS, and separate signed JWT sessions for customers and staff.",
+    services: ["Website Development", "UI / UX Design", "Maintenance & Growth"],
+    metrics: [
+      { value: "26", label: "data models" },
+      { value: "90", label: "API routes" },
+      { value: "3", label: "staff roles" },
+    ],
+    before: "No online store · personalised orders handled by hand",
+    after: "Full storefront + admin portal · payments · shipping · returns · automated comms",
+  },
+  {
+    slug: "kuber-maheshwari",
+    client: "Kuber Maheshwari",
+    title: "A bhajan singer's site with ticketing and QR gate check-in",
+    category: "Events & Music · Ticketing platform",
+    year: "2026",
+    cover: "from-amber-500 via-orange-600 to-rose-900",
+    url: "https://kuber-maheshwari.vercel.app",
+    summary:
+      "A bilingual (Hindi + English) official site for an Indore bhajan singer, with event ticketing via Razorpay, signed QR e-tickets, a phone-based gate scanner, and Instagram and Facebook feeds rendered natively.",
+    problem:
+      "Events were promoted on social media and tickets were managed by hand — no single place for fans, no reliable way to sell seats, and no way to check people in at the gate.",
+    research:
+      "The audience is devotional, mobile-first and bilingual, and gates are busy and offline-ish — so ticketing had to be dead simple for fans and forgery-proof and instant for volunteers.",
+    approach:
+      "A cinematic public site (arch hero, pinned horizontal services, scroll-lit text) plus Google login, ticket types with seat holds, QR e-tickets by email, and /admin/scan — any phone becomes a gate scanner with green/amber/red results.",
+    build:
+      "Next.js, Tailwind CSS 4, Prisma and PostgreSQL, NextAuth, Razorpay with webhook backup, Resend, Vercel Blob, Framer Motion and Lenis. Signed QR codes, atomic check-ins across multiple gates, Apple and Google Wallet passes, and a weekly cron that refreshes the Instagram token.",
+    services: ["Website Development", "UI / UX Design", "Branding"],
+    metrics: [
+      { value: "QR", label: "signed e-tickets" },
+      { value: "Multi-gate", label: "atomic check-in" },
+      { value: "Hi + En", label: "bilingual" },
+    ],
+    before: "Social-only promotion · manual ticket lists · no gate control",
+    after: "Official site · online ticketing · phone-based QR check-in · live social feeds",
+  },
+  {
+    slug: "align-dental",
+    client: "Align Aesthetic Dental Hub",
+    title: "An orthodontist's site with online tokens and a live clinic queue",
+    category: "Healthcare · Booking system",
+    year: "2026",
+    cover: "from-teal-600 via-cyan-700 to-rose-600",
+    url: "https://aesthetic-dental-clinic-steel.vercel.app",
+    summary:
+      "The website and token system for an orthodontist in Bhopal — patients book a 15-minute token online, reception runs a live queue, and a waiting-room screen shows who's being seen next.",
+    problem:
+      "Patients queued at the clinic with no idea when they'd be seen, and reception juggled phone calls, walk-ins and a paper register.",
+    research:
+      "Tokens had to work for every patient — no app, no login, no paid SMS — and be impossible to double-book even when reception and patients book at the same moment.",
+    approach:
+      "Online tokens in 15-minute slots up to 14 days ahead, a passcode-protected reception and doctor panel with 'now serving', walk-ins and patient search, a TV queue screen, and patient-side saving (token image, calendar, share, SMS draft).",
+    build:
+      "Next.js 16, React 19 and Tailwind CSS 4 on Turso/SQLite. A partial unique index makes double-booking impossible at the database level, backed by a multi-process race test. Google reviews sync, treatment pages and an AI assistant that works without an API key.",
+    services: ["Website Development", "UI / UX Design", "AI Automation"],
+    metrics: [
+      { value: "15-min", label: "token slots" },
+      { value: "0", label: "double bookings" },
+      { value: "Live", label: "clinic queue" },
+    ],
+    before: "Walk-in queues · phone bookings · paper register",
+    after: "Online tokens · live reception queue · waiting-room screen",
+  },
+  {
+    slug: "shivis-elegance",
+    client: "Shivis Elegance",
+    title: "A jewelry store with a full admin backend",
+    category: "Ecommerce · Full-stack",
+    year: "2025",
+    cover: "from-rose-400 via-royal to-amber-500",
+    url: "https://shivis-elegance1.vercel.app",
+    summary:
+      "Two connected systems: a customer store with OTP login and dual payment gateways, plus a separate admin dashboard for inventory, orders, customers, revenue and coupons — with Shiprocket auto-generating AWBs on order.",
+    problem:
+      "A jewelry brand needed more than a storefront — a complete system to manage products, inventory, orders, customers and revenue alongside the shop.",
+    research:
+      "It was treated as an operations problem as much as a storefront one, so the admin side got the same care as the customer experience.",
+    approach:
+      "A customer store with OTP-based login, self-serve order tracking and returns, and a separate admin dashboard for full inventory, order, customer, revenue and coupon management.",
+    build:
+      "Built on Next.js with a Node/Express and PostgreSQL backend, Razorpay and Stripe gateways, and Shiprocket wired in to auto-generate AWBs the moment an order is placed.",
+    services: ["Website Development", "UI / UX Design", "Branding"],
+    metrics: [
+      { value: "Live", label: "order lifecycle" },
+      { value: "2", label: "payment gateways" },
+      { value: "Shiprocket", label: "auto AWB" },
+    ],
+    before: "Storefront only · manual inventory and order ops",
+    after: "End-to-end store + admin dashboard · payments · auto shipping",
+  },
+  {
+    slug: "barber-now",
+    client: "BarberNow",
+    title: "A salon discovery app with a live virtual queue",
+    category: "Beauty & Wellness · Consumer product",
+    year: "2026",
+    cover: "from-amber-400 via-orange-500 to-fuchsia-700",
+    url: "https://barber-now-brown.vercel.app",
+    summary:
+      "Our own consumer product for India: find salons near you, see the live queue, book a service or slot, and walk in exactly when it's your turn. Phase 1 — the customer web app — is live.",
+    problem:
+      "Customers waste time sitting in salon queues, and salons have no simple way to show availability or take bookings online.",
+    research:
+      "Most salon visits in India are walk-ins, so instead of forcing appointments the product leads with a virtual queue — 'people ahead' and an estimated wait — with slot booking as an option.",
+    approach:
+      "Location-based discovery with search, city filter and sort by nearest, top-rated or shortest wait; rich shop profiles; a booking flow for services, barber and queue-or-slot; a live queue tracker after booking; and a phone + OTP login.",
+    build:
+      "Next.js 15, React 19, TypeScript and Tailwind CSS with a custom design system. Phase 1 runs on structured mock data; the roadmap adds a barber app, a Flutter mobile app and a Node + PostgreSQL + Redis backend for the live queue.",
+    services: ["UI / UX Design", "Website Development", "Mobile App Development"],
+    metrics: [
+      { value: "Phase 1", label: "customer app live" },
+      { value: "Live", label: "queue tracker" },
+      { value: "Own", label: "product" },
+    ],
+    before: "Waiting in line with no idea how long it'll take",
+    after: "See the live queue · book online · walk in on time",
+  },
   {
     slug: "saran-tax-solution",
     client: "Saran Tax Solution",
@@ -131,33 +267,6 @@ export const caseStudies: CaseStudy[] = [
     ],
     before: "No digital presence · no channel for events or donations",
     after: "Event calendar · online donations · engaged community",
-  },
-  {
-    slug: "shivis-elegance",
-    client: "Shivis Elegance",
-    title: "A jewelry store with a full admin backend",
-    category: "Ecommerce · Full-stack",
-    year: "2025",
-    cover: "from-rose-400 via-royal to-amber-500",
-    url: "https://shivis-elegance1.vercel.app",
-    summary:
-      "Two connected systems: a customer store with OTP login and dual payment gateways, plus a separate admin dashboard for inventory, orders, customers, revenue and coupons — with Shiprocket auto-generating AWBs on order.",
-    problem:
-      "A jewelry brand needed more than a storefront — a complete system to manage products, inventory, orders, customers and revenue alongside the shop.",
-    research:
-      "It was treated as an operations problem as much as a storefront one, so the admin side got the same care as the customer experience.",
-    approach:
-      "A customer store with OTP-based login, self-serve order tracking and returns, and a separate admin dashboard for full inventory, order, customer, revenue and coupon management.",
-    build:
-      "Built on Next.js with a Node/Express and PostgreSQL backend, Razorpay and Stripe gateways, and Shiprocket wired in to auto-generate AWBs the moment an order is placed.",
-    services: ["Website Development", "UI / UX Design", "Branding"],
-    metrics: [
-      { value: "Live", label: "order lifecycle" },
-      { value: "2", label: "payment gateways" },
-      { value: "Shiprocket", label: "auto AWB" },
-    ],
-    before: "Storefront only · manual inventory and order ops",
-    after: "End-to-end store + admin dashboard · payments · auto shipping",
   },
 ];
 

@@ -9,7 +9,7 @@ import { CTA } from "@/components/sections/CTA";
 export const metadata: Metadata = {
   title: "Work — Case studies & outcomes",
   description:
-    "Selected case studies from CodeSkate — live client products across finance, community and ecommerce, with the stack and outcomes behind each.",
+    "Case studies from CodeSkate — live products across ecommerce, events, healthcare, beauty, finance and community, with the stack and outcomes behind each.",
   alternates: { canonical: "/work" },
 };
 
@@ -19,7 +19,7 @@ export default function WorkPage() {
   const stacks = new Set(caseStudies.flatMap((c) => caseMeta[c.slug]?.tech ?? []));
 
   const summary = [
-    { value: caseStudies.length, label: "Live client products" },
+    { value: caseStudies.length, label: "Live projects" },
     { value: industries.size, label: "Industries" },
     { value: stacks.size, label: "Technologies shipped" },
     { value: "100%", label: "Code ownership" },

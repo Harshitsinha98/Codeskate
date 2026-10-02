@@ -9,10 +9,10 @@
 // ---------------------------------------------------------------- trust bar
 
 export const trustBarStats = [
-  { value: 5, suffix: "+", label: "Products Shipped" },
-  { value: 4, suffix: "", label: "Live in Production" },
-  { value: 5, suffix: "", label: "Industries Served" },
-  { value: 24, suffix: "h", label: "Avg. Response Time" },
+  { value: 9, suffix: "", label: "Products shipped" },
+  { value: 6, suffix: "", label: "Industries served" },
+  { value: 2, suffix: "", label: "In-house products" },
+  { value: 24, suffix: "h", label: "Avg. response time" },
 ] as const;
 
 // ---------------------------------------------------------------- services
@@ -175,6 +175,42 @@ export type CaseMeta = {
 
 /** Extra software-project framing, keyed to caseStudies slugs. */
 export const caseMeta: Record<string, CaseMeta> = {
+  "divine-karigari": {
+    slug: "divine-karigari",
+    industry: "Ecommerce",
+    problem: "An artisan gifting brand needed a store and a back office.",
+    solution: "A personalised-gifts store plus a role-based admin portal with payments, shipping and returns.",
+    tech: ["Next.js", "PostgreSQL", "Prisma", "Razorpay", "Shiprocket", "Resend"],
+    result: "Full commerce platform live",
+    image: "/work/divine-karigari.jpg",
+  },
+  "kuber-maheshwari": {
+    slug: "kuber-maheshwari",
+    industry: "Events & Music",
+    problem: "Events were sold and checked in by hand.",
+    solution: "A bilingual artist site with Razorpay ticketing, signed QR e-tickets and a phone gate scanner.",
+    tech: ["Next.js", "Prisma", "NextAuth", "Razorpay", "Framer Motion", "Lenis"],
+    result: "Online ticketing + QR check-in live",
+    image: "/work/kuber-maheshwari.jpg",
+  },
+  "align-dental": {
+    slug: "align-dental",
+    industry: "Healthcare",
+    problem: "Patients queued at the clinic with no idea when they'd be seen.",
+    solution: "Online 15-minute tokens, a live reception queue and a waiting-room screen.",
+    tech: ["Next.js 16", "React 19", "Tailwind 4", "Turso", "Google Places"],
+    result: "Live token booking + clinic queue",
+    image: "/work/align-dental.jpg",
+  },
+  "barber-now": {
+    slug: "barber-now",
+    industry: "Beauty & Wellness",
+    problem: "Salon customers waste time sitting in queues.",
+    solution: "Salon discovery with a live virtual queue, slot booking and OTP login.",
+    tech: ["Next.js 15", "React 19", "TypeScript", "Tailwind"],
+    result: "Phase 1 customer app live",
+    image: "/work/barber-now.jpg",
+  },
   "saran-tax-solution": {
     slug: "saran-tax-solution",
     industry: "Finance",
