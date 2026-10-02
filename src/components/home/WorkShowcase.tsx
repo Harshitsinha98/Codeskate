@@ -41,7 +41,7 @@ export function WorkShowcase() {
   );
 }
 
-function WorkCard({ slug, large = false }: { slug: string; large?: boolean }) {
+export function WorkCard({ slug, large = false }: { slug: string; large?: boolean }) {
   const study = caseStudies.find((c) => c.slug === slug)!;
   const meta = caseMeta[slug];
 
