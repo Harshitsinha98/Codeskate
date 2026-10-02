@@ -86,7 +86,7 @@ export const caseStudies: CaseStudy[] = [
     category: "Ecommerce · Full-stack platform",
     year: "2026",
     cover: "from-pink-500 via-rose-500 to-royal",
-    url: "https://divine-karigari.vercel.app",
+    url: "https://www.divinekarigari.com",
     summary:
       "A handcrafted and personalised gifts store with a role-aware admin portal — catalog with variants and personalisation, Razorpay checkout, Shiprocket shipping and returns, wallet credit and automated email, SMS and abandoned-cart flows.",
     problem:
@@ -140,7 +140,7 @@ export const caseStudies: CaseStudy[] = [
     category: "Healthcare · Booking system",
     year: "2026",
     cover: "from-teal-600 via-cyan-700 to-rose-600",
-    url: "https://aesthetic-dental-clinic-steel.vercel.app",
+    url: "https://www.alignaestheticdentalhub.com",
     summary:
       "The website and token system for an orthodontist in Bhopal — patients book a 15-minute token online, reception runs a live queue, and a waiting-room screen shows who's being seen next.",
     problem:
