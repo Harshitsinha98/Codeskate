@@ -1,15 +1,15 @@
 "use client";
 
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Check } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
+import { Spotlight } from "@/components/ui/Spotlight";
 import { waLink } from "@/lib/site";
-import { getServiceIcon, serviceAccentText } from "./serviceIcons";
 import type { CatalogService } from "@/types/catalog";
 
 /**
- * DiziCode-style per-service pricing card: colored icon + title, a
- * "Starting from ₹X" price, the entry package's feature list, and a vertical
- * "ENQUIRE NOW" rail that opens WhatsApp (price is discussed after enquiry).
+ * Per-service pricing card: mono index, title, a big "from ₹X" price, the
+ * entry package's features and a footer with WhatsApp enquiry + details link.
  */
 export function ServicePricingCard({
   service,
@@ -19,46 +19,43 @@ export function ServicePricingCard({
   index?: number;
 }) {
   const entry = service.packages[0];
-  const accent = serviceAccentText[service.slug] ?? "text-royal";
   const features = entry?.features ?? [];
-  const cadence = entry?.cadence ? ` ${entry.cadence}` : "";
 
   const enquireHref = waLink(
     `Hi CodeSkate, I'd like to enquire about ${service.title} (starting from ${entry?.priceLabel ?? "custom pricing"}).`
   );
 
   return (
-    <Reveal delay={index * 0.05}>
-      <div className="flex overflow-hidden rounded-3xl border border-line bg-white shadow-soft transition-shadow duration-300 hover:shadow-lift">
-        <div className="flex-1 p-6 md:p-8">
-          <div className="flex items-center gap-4">
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-surface/70">
-              {getServiceIcon(service.slug)}
-            </span>
+    <Reveal delay={(index % 2) * 0.06} className="h-full">
+      <Spotlight className="flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-surface transition-colors duration-300 hover:border-ink/15">
+        <div className="flex-1 p-7 md:p-8">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className={`text-xl font-semibold md:text-2xl ${accent}`}>
-                {service.title}
-              </h3>
-              <p className="mt-0.5 text-sm text-ink-muted">{service.tagline}</p>
+              <span className="font-mono text-[0.7rem] text-ink-faint">{service.index}</span>
+              <h3 className="mt-1 text-xl font-semibold tracking-tight text-ink">{service.title}</h3>
+              <p className="mt-1 text-sm text-ink-muted">{service.tagline}</p>
             </div>
+            <Link
+              href={`/services/${service.slug}`}
+              aria-label={`${service.title} details`}
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink-muted transition-colors hover:border-ink/20 hover:text-ink"
+            >
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </div>
 
-          <div className="mt-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
-              Starting from
-            </p>
-            <p className="mt-1 text-3xl font-bold text-ink md:text-4xl">
+          <div className="mt-7 flex items-baseline gap-2">
+            <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-muted">From</span>
+            <span className="text-4xl font-semibold tabular-nums tracking-tight text-ink">
               {entry?.priceLabel ?? "Custom"}
-              <span className="text-base font-normal text-ink-muted">
-                {cadence}
-              </span>
-            </p>
+            </span>
+            {entry?.cadence && <span className="text-sm text-ink-muted">{entry.cadence}</span>}
           </div>
 
-          <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+          <ul className="mt-7 grid gap-2.5 border-t border-line pt-6 sm:grid-cols-2">
             {features.map((feature) => (
               <li key={feature} className="flex items-start gap-2 text-sm text-ink-soft">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-royal" />
                 <span>{feature}</span>
               </li>
             ))}
@@ -70,16 +67,12 @@ export function ServicePricingCard({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Enquire about ${service.title} on WhatsApp`}
-          className="flex w-14 shrink-0 items-center justify-center bg-royal text-white transition-colors duration-300 hover:bg-royal/90 md:w-16"
+          className="group/cta flex items-center justify-between border-t border-line bg-subtle px-7 py-4 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-white md:px-8"
         >
-          <span
-            className="text-sm font-semibold uppercase tracking-widest"
-            style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
-          >
-            Enquire Now
-          </span>
+          Get an exact quote on WhatsApp
+          <ArrowUpRight className="h-4 w-4 text-royal transition-transform group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5" />
         </a>
-      </div>
+      </Spotlight>
     </Reveal>
   );
 }

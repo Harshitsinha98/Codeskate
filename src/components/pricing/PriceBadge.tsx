@@ -10,12 +10,15 @@ export function PriceBadge({
   discountLabel,
   cadence,
   size = "md",
+  tone = "light",
 }: {
   price: number | string;
   oldPrice?: number | string | null;
   discountLabel?: string | null;
   cadence?: string | null;
   size?: "sm" | "md" | "lg";
+  /** "dark" for night surfaces. */
+  tone?: "light" | "dark";
 }) {
   const priceText = typeof price === "number" ? formatPrice(price) : price;
   const oldText =
@@ -30,15 +33,15 @@ export function PriceBadge({
 
   return (
     <span className="inline-flex flex-wrap items-baseline gap-2.5">
-      <span className={`${priceSize} font-bold tracking-tight text-royal`}>
+      <span className={`${priceSize} font-semibold tabular-nums tracking-tight ${tone === "dark" ? "text-gradient" : "text-royal"}`}>
         {priceText}
       </span>
       {oldText && (
-        <span className="text-base text-ink-faint line-through">{oldText}</span>
+        <span className={`text-base line-through ${tone === "dark" ? "text-white/30" : "text-ink-faint"}`}>{oldText}</span>
       )}
       {cadence && <span className="text-sm text-ink-faint">{cadence}</span>}
       {discountLabel && (
-        <span className="rounded-full bg-success/10 px-2.5 py-0.5 text-xs font-bold text-success">
+        <span className={`rounded-full px-2.5 py-0.5 font-mono text-xs ${tone === "dark" ? "bg-emerald-400/10 text-emerald-300" : "bg-success/10 font-bold text-success"}`}>
           {discountLabel}
         </span>
       )}

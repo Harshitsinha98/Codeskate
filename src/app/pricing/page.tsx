@@ -5,6 +5,7 @@ import { FAQ } from "@/components/sections/FAQ";
 import { CTA } from "@/components/sections/CTA";
 import { Reveal } from "@/components/motion/Reveal";
 import { CATALOG_SERVICES } from "@/config/catalog";
+import { OfferBanner } from "@/components/pricing/OfferBanner";
 
 export const metadata: Metadata = {
   title: "Pricing — Transparent, per-service packages",
@@ -21,6 +22,9 @@ export default function PricingPage() {
         title="Transparent pricing for every service."
         description="Every service starts at a clear price — the final quote depends on your scope, so tap Enquire Now and we'll confirm it on WhatsApp within minutes."
       />
+
+      {/* Launch offer lives here (moved off the homepage + announcement bar). */}
+      <OfferBanner />
 
       <section className="py-16 md:py-20">
         <div className="container-x">

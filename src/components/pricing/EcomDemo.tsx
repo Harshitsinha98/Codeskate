@@ -45,7 +45,7 @@ export function EcomDemo() {
   const showStore = ["browse", "add1", "add2"].includes(stage);
 
   return (
-    <div className="glass-warm relative rounded-3xl p-4 shadow-soft">
+    <div className="relative rounded-3xl border border-white/[0.08] bg-white/[0.03] p-4">
       <div className="relative mx-auto max-w-[300px] overflow-hidden rounded-2xl border border-line bg-surface shadow-lift">
         {/* app top bar */}
         <div className="flex items-center gap-2 border-b border-line bg-subtle px-3 py-2.5">
@@ -257,7 +257,7 @@ export function EcomDemo() {
         </div>
       </div>
 
-      <p className="mt-3 text-center text-[0.7rem] text-ink-muted">
+      <p className="mt-3 text-center font-mono text-[0.65rem] text-white/40">
         Live checkout — the kind of experience we build
       </p>
     </div>

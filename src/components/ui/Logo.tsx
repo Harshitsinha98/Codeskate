@@ -11,9 +11,12 @@ import { site } from "@/lib/site";
 export function Logo({
   className,
   onClick,
+  tone = "light",
 }: {
   className?: string;
   onClick?: () => void;
+  /** "dark" renders a white wordmark for night surfaces. */
+  tone?: "light" | "dark";
 }) {
   return (
     <Link
@@ -26,7 +29,7 @@ export function Logo({
         {/* gradient tile + sheen */}
         <span
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-br from-[#FB923C] via-[#F97316] to-[#EA580C]"
+          className="absolute inset-0 bg-gradient-to-br from-[#FF9A5C] via-[#FF6A1A] to-[#E2520A]"
         />
         <span aria-hidden className="logo-sheen absolute inset-0" />
         <svg
@@ -44,7 +47,12 @@ export function Logo({
           />
         </svg>
       </span>
-      <span className="text-lg font-bold tracking-tight text-ink">
+      <span
+        className={cn(
+          "text-lg font-semibold tracking-tight",
+          tone === "dark" ? "text-white" : "text-ink"
+        )}
+      >
         Code<span className="text-royal">Skate</span>
       </span>
     </Link>

@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-    --font-sans: "Inter", system-ui, sans-serif;
     color-scheme: light;
   }
 
@@ -23,13 +22,13 @@
   }
 
   ::selection {
-    background-color: rgba(249, 115, 22, 0.15);
-    color: #111827;
+    background-color: rgba(255, 106, 26, 0.22);
+    color: inherit;
   }
 
   /* Accessible focus ring */
   :focus-visible {
-    outline: 2px solid rgba(249, 115, 22, 0.6);
+    outline: 2px solid rgba(255, 106, 26, 0.6);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -51,12 +50,43 @@
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-royal/20 bg-royal/5 px-3.5 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-royal;
+    @apply inline-flex items-center gap-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.14em] text-royal;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-royal;
+    box-shadow: 0 0 10px rgba(255, 106, 26, 0.8);
   }
 
-  /* Accent word — solid primary */
+  /* Mono pill used on dark surfaces ("● New — …"). */
+  .pill-night {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[0.72rem] text-white/70 backdrop-blur;
+  }
+
+  /* Dark section shell — near-black with a faint top glow. */
+  .section-night {
+    @apply relative overflow-hidden bg-night text-white;
+  }
+
+  /* Dark card with a 1px inner hairline. */
+  .card-night {
+    @apply relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01];
+  }
+
+  /* Accent word — orange gradient */
   .text-gradient {
-    @apply text-royal;
+    background: linear-gradient(180deg, #FFB37A 0%, #FF6A1A 55%, #E2520A 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Headline on dark: white → soft grey sheen */
+  .text-shine {
+    background: linear-gradient(180deg, #FFFFFF 30%, rgba(255, 255, 255, 0.55) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* White surface with a hairline border (navbar scrolled state) */
@@ -69,6 +99,76 @@
 }
 
 @layer utilities {
+  /* ---- Dark-surface backdrops ---- */
+  .night-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 30%, transparent 75%);
+  }
+
+  .night-glow {
+    background:
+      radial-gradient(50rem 28rem at 50% -8%, rgba(255, 106, 26, 0.22), transparent 62%),
+      radial-gradient(30rem 20rem at 85% 30%, rgba(255, 138, 71, 0.06), transparent 60%);
+  }
+
+  /* Horizon line that the product screenshot "rises" from. */
+  .horizon {
+    background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 106, 26, 0.35), transparent 70%);
+  }
+
+  /* Orange gradient hairline border (via mask). */
+  .ring-gradient {
+    position: relative;
+  }
+  .ring-gradient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 138, 71, 0.7), rgba(255, 255, 255, 0.06) 40%, rgba(255, 255, 255, 0.02));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Cursor spotlight — set --mx / --my from JS (see <Spotlight>). */
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 50%), rgba(255, 106, 26, 0.10), transparent 40%);
+  }
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+  .spotlight-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 50%), rgba(255, 138, 71, 0.75), transparent 45%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .spotlight-border:hover::before {
+    opacity: 1;
+  }
+
   /* Barely-there film-grain texture for hero surfaces. */
   .noise::after {
     content: "";

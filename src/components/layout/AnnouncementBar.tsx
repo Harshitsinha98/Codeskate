@@ -1,57 +1,42 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, X, Flame } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useState } from "react";
-import { PRIMARY_OFFER, offerPriceLabel } from "@/lib/config/offers";
 
 /**
- * PHASE 2 — Announcement bar.
- * Warm-orange, rounded, offer-driven strip above the navbar. "Limited Time"
- * pill + animated arrow CTA, dismissible. Reads the centralized primary offer.
+ * Announcement bar — a slim, dark product-update strip (not a discount).
+ * Offers live on /pricing; this slot is for what we've shipped.
  */
 export function AnnouncementBar() {
   const [open, setOpen] = useState(true);
-  if (!open || !PRIMARY_OFFER.visible) return null;
+  if (!open) return null;
 
   return (
-    <div className="relative z-[60] bg-white px-3 pt-3">
-      <div className="container-x">
-        <div className="relative flex items-center justify-center gap-x-3 gap-y-1 overflow-hidden rounded-2xl border border-royal/20 bg-gradient-to-r from-royal to-royal-600 px-4 py-2.5 pr-11 text-center shadow-soft sm:pr-4">
-          {/* soft sheen */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(24rem_10rem_at_20%_-40%,rgba(255,255,255,0.25),transparent)]"
-          />
-
-          <span className="relative hidden items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-white sm:inline-flex">
-            <Flame className="h-3 w-3" />
-            Limited Time
+    <div className="relative z-[60] border-b border-white/[0.06] bg-night">
+      <div className="container-x flex h-10 items-center justify-center">
+        <Link
+          href="/products/codeskate-crm"
+          className="group inline-flex items-center gap-2.5 text-[0.8rem] text-white/70 transition-colors hover:text-white"
+        >
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-royal/30 bg-royal/10 px-2 py-0.5 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-royal-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-royal shadow-[0_0_8px_rgba(255,106,26,0.9)]" />
+            New
           </span>
+          <span>
+            CodeSkate CRM is live
+            <span className="hidden sm:inline"> — call tracking, WhatsApp automation &amp; lead hub</span>
+          </span>
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+        </Link>
 
-          <p className="relative text-[0.8rem] text-white sm:text-sm">
-            <span className="font-semibold">Launch Offer</span>
-            <span className="hidden sm:inline"> — Professional Business Website</span>{" "}
-            starting at{" "}
-            <span className="font-bold">{offerPriceLabel(PRIMARY_OFFER)}</span>
-          </p>
-
-          <Link
-            href={PRIMARY_OFFER.ctaLink}
-            className="group relative inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[0.72rem] font-bold text-royal shadow-sm transition-transform hover:-translate-y-0.5 sm:text-xs"
-          >
-            Claim Offer
-            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-          </Link>
-
-          <button
-            onClick={() => setOpen(false)}
-            aria-label="Dismiss announcement"
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
+        <button
+          onClick={() => setOpen(false)}
+          aria-label="Dismiss announcement"
+          className="absolute right-3 rounded-full p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
   );

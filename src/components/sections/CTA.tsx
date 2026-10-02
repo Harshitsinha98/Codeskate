@@ -1,107 +1,56 @@
-"use client";
-
-import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
-import { site } from "@/lib/site";
+import { site, waLink } from "@/lib/site";
 
-const contacts = [
-  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
-  { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.whatsapp}` },
-  {
-    icon: MapPin,
-    label: "Office",
-    value: `${site.address.line2}`,
-    href: undefined,
-  },
-];
-
-/** PHASE 3 — Final conversion CTA with contact details. */
+/** Final conversion CTA — full-bleed dark section with a horizon glow. */
 export function CTA() {
   return (
-    <section className="warm-wash py-20 md:py-28">
-      <div className="divider-orange mx-auto mb-16 w-full max-w-[1200px]" />
-      <div className="container-x">
-        <div className="relative overflow-hidden rounded-4xl bg-ink px-6 py-16 shadow-lift md:px-16 md:py-20">
-          <div
-            className="absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-              backgroundSize: "44px 44px",
-              maskImage:
-                "radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%)",
-              WebkitMaskImage:
-                "radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%)",
-            }}
-            aria-hidden
-          />
-          <div
-            className="absolute left-1/2 top-0 h-40 w-[36rem] -translate-x-1/2 rounded-full bg-royal/20 blur-3xl"
-            aria-hidden
-          />
+    <section className="section-night border-t border-white/[0.06]">
+      <div className="night-grid pointer-events-none absolute inset-0 rotate-180" aria-hidden />
+      <div
+        className="horizon pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-72 max-w-4xl blur-2xl"
+        aria-hidden
+      />
 
-          <div className="relative mx-auto max-w-2xl text-center">
-            <Reveal>
-              <h2 className="text-display-lg font-bold text-white">
-                Let&apos;s Build Something Exceptional.
-              </h2>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/65 md:text-lg">
-                Tell us about your idea. We&apos;ll help you design, build and
-                scale it — starting with a free, no-commitment consultation.
-              </p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button href="/contact" variant="primary" size="lg" arrow>
-                  Start Your Project
-                </Button>
-                <Button href="/contact" variant="secondary" size="lg">
-                  Book Consultation
-                </Button>
-              </div>
-            </Reveal>
+      <div className="container-x relative py-28 text-center md:py-36">
+        <Reveal>
+          <span className="eyebrow">Let&apos;s build</span>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2 className="mx-auto mt-5 max-w-4xl text-[clamp(2.4rem,5.5vw,4.5rem)] font-semibold leading-[1.04] tracking-[-0.04em]">
+            <span className="text-shine">Have an idea? </span>
+            <span className="text-gradient">Let&apos;s ship it.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/55 md:text-lg">
+            Tell us what you&apos;re building. In one free call you&apos;ll get a
+            clear plan, a fixed price and a realistic timeline.
+          </p>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Button href="/contact" variant="glow" size="lg" arrow>
+              Start a project
+            </Button>
+            <Button href={waLink("Hi CodeSkate, I'd like to discuss a project.")} variant="night" size="lg" external>
+              Chat on WhatsApp
+            </Button>
           </div>
-
-          {/* Contact strip */}
-          <Reveal delay={0.15}>
-            <div className="relative mx-auto mt-14 grid max-w-3xl grid-cols-1 gap-4 border-t border-white/10 pt-10 sm:grid-cols-3">
-              {contacts.map((c) => {
-                const inner = (
-                  <span className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
-                      <c.icon className="h-4 w-4" />
-                    </span>
-                    <span className="text-left">
-                      <span className="block text-[0.65rem] font-bold uppercase tracking-wide text-white/40">
-                        {c.label}
-                      </span>
-                      <span className="block text-sm font-medium text-white/85">
-                        {c.value}
-                      </span>
-                    </span>
-                  </span>
-                );
-                return c.href ? (
-                  <Link
-                    key={c.label}
-                    href={c.href}
-                    className="rounded-2xl p-2 transition-colors hover:bg-white/5"
-                  >
-                    {inner}
-                  </Link>
-                ) : (
-                  <div key={c.label} className="rounded-2xl p-2">
-                    {inner}
-                  </div>
-                );
-              })}
-            </div>
-          </Reveal>
-        </div>
+        </Reveal>
+        <Reveal delay={0.2}>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-xs text-white/40">
+            <a href={`mailto:${site.email}`} className="transition-colors hover:text-white">
+              {site.email}
+            </a>
+            <span className="hidden h-3 w-px bg-white/15 sm:block" />
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="transition-colors hover:text-white">
+              {site.phone}
+            </a>
+            <span className="hidden h-3 w-px bg-white/15 sm:block" />
+            <span>{site.address.line2}</span>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

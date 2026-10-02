@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { Spotlight } from "@/components/ui/Spotlight";
+import { Check, X } from "lucide-react";
 import { stats } from "@/lib/content";
 import { CTA } from "@/components/sections/CTA";
 
@@ -11,6 +13,14 @@ export const metadata: Metadata = {
     "CodeSkate is a remote-first product engineering studio. A senior team of engineers, designers and product strategists building software that scales.",
   alternates: { canonical: "/about" },
 };
+
+const comparison = [
+  { topic: "Who builds it", agency: "Juniors, after the sales call", us: "The senior team you met" },
+  { topic: "Pricing", agency: "Hourly, open-ended", us: "Fixed price, paid per milestone" },
+  { topic: "Visibility", agency: "Status emails when you chase", us: "Live client portal + weekly preview" },
+  { topic: "Ownership", agency: "Locked into their stack", us: "100% of the code is yours" },
+  { topic: "After launch", agency: "New contract for every fix", us: "Monitoring, fixes and a roadmap" },
+];
 
 const values = [
   {
@@ -59,7 +69,8 @@ export default function AboutPage() {
         <div className="container-x">
           <div className="mx-auto max-w-4xl">
             <Reveal>
-              <p className="font-display text-2xl leading-[1.4] tracking-tight text-ink md:text-4xl md:leading-[1.35]">
+              <span className="eyebrow">Why we exist</span>
+              <p className="mt-6 text-2xl font-medium leading-[1.4] tracking-tight text-ink md:text-4xl md:leading-[1.3]">
                 We started CodeSkate to close a gap: most teams could either
                 <span className="text-gradient"> design an interface</span> or
                 <span className="text-gradient"> ship a system</span> — rarely
@@ -72,25 +83,66 @@ export default function AboutPage() {
       </section>
 
       {/* Stats band */}
-      <section className="border-y border-line bg-surface/50 py-16">
-        <div className="container-x">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {stats.map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 0.08}>
-                <div>
-                  <div className="font-display text-4xl tracking-tight text-ink md:text-5xl">
-                    {stat.value}
-                  </div>
-                  <div className="mt-2 text-sm text-ink-muted">{stat.label}</div>
+      <section className="section-night border-y border-white/[0.06]">
+        <div className="container-x grid grid-cols-2 md:grid-cols-4">
+          {stats.map((stat, i) => (
+            <Reveal key={stat.label} delay={i * 0.06}>
+              <div
+                className={`px-2 py-12 text-center ${i % 2 === 1 ? "border-l border-white/[0.06]" : ""} ${
+                  i === 2 ? "md:border-l md:border-white/[0.06]" : ""
+                } ${i >= 2 ? "border-t border-white/[0.06] md:border-t-0" : ""}`}
+              >
+                <div className="font-mono text-4xl font-medium tabular-nums tracking-tight text-white md:text-5xl">
+                  {stat.value}
                 </div>
-              </Reveal>
-            ))}
-          </div>
+                <div className="mt-2 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-white/40">
+                  {stat.label}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Agency vs CodeSkate */}
+      <section className="bg-base py-24 md:py-32">
+        <div className="container-x">
+          <SectionHeading
+            eyebrow="The difference"
+            title="What working with us actually changes."
+          />
+          <Reveal delay={0.1}>
+            <div className="mt-12 overflow-hidden rounded-3xl border border-line">
+              <div className="grid grid-cols-[1fr_1fr] border-b border-line bg-subtle font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink-muted md:grid-cols-[0.8fr_1fr_1fr]">
+                <span className="hidden px-6 py-4 md:block" />
+                <span className="px-6 py-4">Typical agency</span>
+                <span className="border-l border-line bg-night px-6 py-4 text-royal-400">CodeSkate</span>
+              </div>
+              {comparison.map((row) => (
+                <div
+                  key={row.topic}
+                  className="grid grid-cols-[1fr_1fr] border-b border-line last:border-0 md:grid-cols-[0.8fr_1fr_1fr]"
+                >
+                  <span className="col-span-2 px-6 pt-5 text-sm font-semibold text-ink md:col-span-1 md:py-5">
+                    {row.topic}
+                  </span>
+                  <span className="flex items-start gap-2 px-6 py-4 text-sm text-ink-muted md:py-5">
+                    <X className="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" />
+                    {row.agency}
+                  </span>
+                  <span className="flex items-start gap-2 border-l border-white/[0.06] bg-night px-6 py-4 text-sm text-white/85 md:py-5">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-royal-400" />
+                    {row.us}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Values */}
-      <section className="py-24 md:py-32">
+      <section className="border-t border-line bg-subtle py-24 md:py-32">
         <div className="container-x">
           <SectionHeading
             eyebrow="What we believe"
@@ -99,17 +151,17 @@ export default function AboutPage() {
           <Stagger className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {values.map((value, i) => (
               <StaggerItem key={value.title}>
-                <div className="h-full rounded-4xl border border-line bg-surface p-8 shadow-soft transition-all duration-500 hover:-translate-y-1 hover:shadow-lift">
-                  <span className="font-display text-sm tabular-nums text-ink-faint">
+                <Spotlight className="h-full rounded-3xl border border-line bg-surface p-8 transition-colors duration-300 hover:border-ink/15">
+                  <span className="font-mono text-xs tabular-nums text-royal">
                     0{i + 1}
                   </span>
-                  <h3 className="mt-4 font-display text-xl tracking-tight text-ink">
+                  <h3 className="mt-4 text-xl font-semibold tracking-tight text-ink">
                     {value.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                     {value.detail}
                   </p>
-                </div>
+                </Spotlight>
               </StaggerItem>
             ))}
           </Stagger>
