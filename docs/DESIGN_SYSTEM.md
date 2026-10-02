@@ -11,6 +11,13 @@
 > are expressed as design tokens (hex/rem/ms) that frontend will implement. This is the
 > contract between design and engineering.
 
+> **Implemented marketing-site tokens (supersedes the indigo palette below for the public site):**
+> - **Surfaces:** `night` `#0A0A0B` (hero, proof, services, product, CTA, navbar, footer, inner-page headers); light `base`/`subtle` for reading sections (work, process, FAQ, pricing tables).
+> - **Brand:** orange `royal` `#FF6A1A` (400 `#FF8A47`, 600 `#F25A0A`) — highlight only: CTAs, glows, active states. `violet`/`cyan` are legacy aliases mapped to orange; don't use them in new code.
+> - **Type:** Geist Sans (`--font-sans`) + Geist Mono (`--font-mono`) for eyebrows, numbers, stats and URLs. Geist Mono lacks `✓ ○ → ⌘` — use icons or ASCII.
+> - **Utilities (globals.css):** `section-night`, `card-night`, `pill-night`, `night-grid`, `night-glow`, `horizon`, `ring-gradient`, `text-shine`, `text-gradient`, and `spotlight`/`spotlight-border` (via `<Spotlight>`) — the single card hover treatment.
+> - **Buttons:** pill-shaped; `glow` / `night` / `night-ghost` variants for dark surfaces.
+
 ---
 
 ## 0. Design Philosophy

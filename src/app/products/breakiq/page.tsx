@@ -72,10 +72,10 @@ export default function BreakIqPage() {
         description="BreakIQ started as an internal project to fix break and workforce management in our own office. It's live at breakiq.in and runs every day — a small example of how we turn a real operational problem into working software."
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Button href={enquire} variant="primary" size="lg" external>
+          <Button href={enquire} variant="glow" size="lg" external>
             Want something like this?
           </Button>
-          <Button href={DEMO_URL} variant="secondary" size="lg" external>
+          <Button href={DEMO_URL} variant="night" size="lg" external>
             Visit BreakIQ
           </Button>
         </div>

@@ -77,18 +77,18 @@ export default async function ServiceDetailPage({
         description={service.summary}
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Button href="/contact" variant="primary" size="lg" arrow magnetic>
+          <Button href="/contact" variant="glow" size="lg" arrow magnetic>
             Start Your Project
           </Button>
           <Button
             href={enquireHref}
-            variant="secondary"
+            variant="night"
             size="lg"
             external
           >
             Enquire on WhatsApp
           </Button>
-          <p className="text-sm font-medium text-ink-soft">
+          <p className="text-sm font-medium text-white/50">
             {service.outcome}
           </p>
         </div>

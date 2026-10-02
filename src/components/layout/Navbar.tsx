@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Menu, X, ArrowRight, Phone, Zap } from "lucide-react";
+import { ChevronDown, Menu, X, ArrowRight, ArrowUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { primaryNav, footerNav, site } from "@/lib/site";
@@ -18,10 +18,9 @@ type MenuKey = "services" | "resources";
 const resourceLinks = footerNav.Resources;
 
 /**
- * PHASE 2 — Navbar.
- * Sticky, transparent at top → white glass blur after scroll. Centered nav
- * with an animated shared underline, a Services mega menu, a Resources
- * dropdown, and Login / Book Consultation / Start Project actions.
+ * Navbar — dark glass chrome (Linear/Raycast style). Sticky; gains a stronger
+ * blur + hairline after scroll. Hover pill follows the cursor across links.
+ * Right side: "Log in" + a glowing "Start a project" CTA.
  */
 export function Navbar() {
   const pathname = usePathname();
@@ -58,10 +57,10 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full transition-all duration-300 ease-premium",
+        "sticky top-0 z-50 w-full border-b transition-all duration-300 ease-premium",
         scrolled
-          ? "border-b border-line bg-white/80 shadow-soft backdrop-blur-xl backdrop-saturate-150"
-          : "border-b border-transparent bg-transparent"
+          ? "border-white/[0.08] bg-night/95 backdrop-blur-xl backdrop-saturate-150"
+          : "border-transparent bg-night"
       )}
     >
       <div className="container-x">
@@ -72,20 +71,17 @@ export function Navbar() {
             setHovered(null);
           }}
         >
-          {/* Left: logo */}
           <div className="shrink-0">
-            <Logo />
+            <Logo tone="dark" />
           </div>
 
-          {/* Center: nav */}
+          {/* Center nav */}
           <ul
             className="hidden flex-1 items-center justify-center gap-0.5 xl:flex"
             onMouseLeave={() => setHovered(null)}
           >
             {primaryNav.map((item) => {
               const active = isActive(item.href);
-              const hasDropdown = item.hasMega;
-              const key = hovered === item.href;
               return (
                 <li
                   key={item.href}
@@ -98,26 +94,28 @@ export function Navbar() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "relative inline-flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
-                      active ? "text-ink" : "text-ink-soft hover:text-ink"
+                      "relative isolate inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[0.85rem] transition-colors",
+                      active ? "text-white" : "text-white/60 hover:text-white"
                     )}
                   >
+                    {hovered === item.href && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 -z-10 rounded-full bg-white/[0.07]"
+                        transition={{ duration: 0.3, ease: EASE }}
+                      />
+                    )}
                     {item.label}
-                    {hasDropdown && (
+                    {item.hasMega && (
                       <ChevronDown
                         className={cn(
-                          "h-3.5 w-3.5 transition-transform duration-300",
+                          "h-3.5 w-3.5 opacity-60 transition-transform duration-300",
                           openMenu === "services" && "rotate-180"
                         )}
                       />
                     )}
-                    {/* animated shared underline */}
-                    {(key || active) && (
-                      <motion.span
-                        layoutId="nav-underline"
-                        className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-royal"
-                        transition={{ duration: 0.3, ease: EASE }}
-                      />
+                    {active && (
+                      <span className="absolute inset-x-0 -bottom-[17px] mx-auto h-px w-6 bg-royal shadow-[0_0_8px_rgba(255,106,26,0.9)]" />
                     )}
                   </Link>
                 </li>
@@ -134,47 +132,44 @@ export function Navbar() {
             >
               <button
                 className={cn(
-                  "relative inline-flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors",
-                  openMenu === "resources"
-                    ? "text-ink"
-                    : "text-ink-soft hover:text-ink"
+                  "relative isolate inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[0.85rem] transition-colors",
+                  openMenu === "resources" ? "text-white" : "text-white/60 hover:text-white"
                 )}
               >
-                Resources
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 transition-transform duration-300",
-                    openMenu === "resources" && "rotate-180"
-                  )}
-                />
                 {hovered === "resources" && (
                   <motion.span
-                    layoutId="nav-underline"
-                    className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-royal"
+                    layoutId="nav-pill"
+                    className="absolute inset-0 -z-10 rounded-full bg-white/[0.07]"
                     transition={{ duration: 0.3, ease: EASE }}
                   />
                 )}
+                Resources
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 opacity-60 transition-transform duration-300",
+                    openMenu === "resources" && "rotate-180"
+                  )}
+                />
               </button>
 
-              {/* Resources panel — anchored under the button */}
               <AnimatePresence>
                 {openMenu === "resources" && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.22, ease: EASE }}
-                    className="absolute right-0 top-full z-50 mt-2 w-72"
+                    initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: EASE }}
+                    className="absolute right-0 top-full z-50 mt-3 w-64"
                   >
-                    <div className="overflow-hidden rounded-3xl border border-line bg-white/95 p-2 shadow-lift backdrop-blur-xl">
+                    <div className="overflow-hidden rounded-2xl border border-white/10 bg-night-800/95 p-1.5 shadow-night-card backdrop-blur-xl">
                       {resourceLinks.map((r) => (
                         <Link
                           key={r.href}
                           href={r.href}
-                          className="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium text-ink-soft transition-colors hover:bg-subtle hover:text-ink"
+                          className="group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm text-white/65 transition-colors hover:bg-white/[0.06] hover:text-white"
                         >
                           {r.label}
-                          <ArrowRight className="h-4 w-4 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-royal" />
+                          <ArrowRight className="h-3.5 w-3.5 text-white/30 transition-transform group-hover:translate-x-0.5 group-hover:text-royal" />
                         </Link>
                       ))}
                     </div>
@@ -184,35 +179,24 @@ export function Navbar() {
             </li>
           </ul>
 
-          {/* Right: actions */}
-          <div className="hidden shrink-0 items-center gap-1.5 xl:flex">
-            <Button
-              href={`tel:${site.phone.replace(/\s/g, "")}`}
-              external
-              variant="secondary"
-              size="md"
-            >
-              <span className="inline-flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Call Now
-              </span>
+          {/* Right actions */}
+          <div className="hidden shrink-0 items-center gap-1 xl:flex">
+            <Button href="/login" variant="night-ghost" size="sm">
+              Log in
             </Button>
-            <Button href="https://crm.codeskate.com" external variant="primary" size="md">
-              <span className="inline-flex items-center gap-2">
-                <Zap className="h-4 w-4 fill-current" />
-                Try CodeSkate CRM
-              </span>
+            <Button href="/contact" variant="glow" size="sm" arrow>
+              Start a project
             </Button>
           </div>
 
           {/* Mobile toggle */}
           <button
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-surface text-ink xl:hidden"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white xl:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </nav>
 
@@ -220,49 +204,58 @@ export function Navbar() {
         <AnimatePresence>
           {openMenu === "services" && (
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.22, ease: EASE }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.2, ease: EASE }}
               className="absolute inset-x-0 top-full hidden px-6 xl:block"
               onMouseEnter={() => setOpenMenu(openMenu)}
+              onMouseLeave={() => setOpenMenu(null)}
             >
               <div className="container-x">
-                <div className="mt-2 overflow-hidden rounded-3xl border border-line bg-white/95 p-3 shadow-lift backdrop-blur-xl">
-                  <div className="grid grid-cols-2 gap-1">
+                <div className="mt-2 grid grid-cols-[1fr_17rem] gap-2 overflow-hidden rounded-3xl border border-white/10 bg-night-800/95 p-2 shadow-night-card backdrop-blur-xl">
+                  <div className="grid grid-cols-2 gap-0.5">
                     {services.map((s) => (
                       <Link
                         key={s.slug}
                         href={`/services/${s.slug}`}
-                        className="group flex items-start gap-3 rounded-2xl p-3.5 transition-colors hover:bg-subtle"
+                        className="group flex items-start gap-3 rounded-2xl p-3.5 transition-colors hover:bg-white/[0.05]"
                       >
-                        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-line bg-subtle text-xs font-bold tabular-nums text-royal transition-colors group-hover:border-royal group-hover:bg-royal group-hover:text-white">
+                        <span className="mt-0.5 font-mono text-[0.7rem] text-white/35 transition-colors group-hover:text-royal">
                           {s.index}
                         </span>
                         <span className="flex-1">
-                          <span className="block text-sm font-semibold text-ink">
+                          <span className="block text-sm font-medium text-white">
                             {s.title}
                           </span>
-                          <span className="mt-0.5 block text-xs leading-relaxed text-ink-muted">
+                          <span className="mt-0.5 block text-xs leading-relaxed text-white/45">
                             {s.tagline}
                           </span>
                         </span>
                       </Link>
                     ))}
                   </div>
-                  <div className="m-1 mt-2 flex items-center justify-between rounded-2xl bg-subtle px-5 py-4">
-                    <div>
-                      <p className="text-sm font-semibold text-ink">
-                        Not sure what you need?
-                      </p>
-                      <p className="text-xs text-ink-muted">
-                        Book a free consultation and we&apos;ll map it out with you.
-                      </p>
-                    </div>
-                    <Button href="/contact" variant="primary" size="md" arrow>
-                      Book Consultation
-                    </Button>
-                  </div>
+                  <Link
+                    href="/products/codeskate-crm"
+                    className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] bg-night p-5"
+                  >
+                    <span className="night-glow absolute inset-0" aria-hidden />
+                    <span className="relative">
+                      <span className="font-mono text-[0.65rem] uppercase tracking-widest text-royal-400">
+                        Our product
+                      </span>
+                      <span className="mt-2 block text-base font-semibold text-white">
+                        CodeSkate CRM
+                      </span>
+                      <span className="mt-1 block text-xs leading-relaxed text-white/50">
+                        The lead-management platform we built, run and ship every week.
+                      </span>
+                    </span>
+                    <span className="relative mt-6 inline-flex items-center gap-1 text-xs font-medium text-white">
+                      See it live
+                      <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </span>
+                  </Link>
                 </div>
               </div>
             </motion.div>
@@ -278,39 +271,38 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-0 z-40 bg-base xl:hidden"
+            className="fixed inset-x-0 bottom-0 top-16 z-40 bg-night xl:hidden"
           >
-            <div className="flex h-full flex-col overflow-y-auto px-6 pb-10 pt-24">
+            <div className="flex h-full flex-col overflow-y-auto px-6 pb-10 pt-4">
               <ul className="flex flex-col">
                 {primaryNav.map((item, i) => (
                   <motion.li
                     key={item.href}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.04 + i * 0.04 }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.03 + i * 0.03 }}
                   >
                     <Link
                       href={item.href}
-                      className="block border-b border-line py-4 text-xl font-semibold text-ink"
+                      className="flex items-center justify-between border-b border-white/[0.08] py-4 text-lg font-medium text-white"
                     >
                       {item.label}
+                      <ArrowRight className="h-4 w-4 text-white/30" />
                     </Link>
                   </motion.li>
                 ))}
               </ul>
 
-              <div className="mt-6">
+              <div className="mt-8">
                 <p className="eyebrow mb-3">Services</p>
-                <ul className="grid grid-cols-1 gap-1">
+                <ul className="grid grid-cols-1 gap-0.5">
                   {services.map((s) => (
                     <li key={s.slug}>
                       <Link
                         href={`/services/${s.slug}`}
-                        className="flex items-center gap-3 rounded-lg py-2.5 text-sm text-ink-soft"
+                        className="flex items-center gap-3 rounded-lg py-2.5 text-sm text-white/65"
                       >
-                        <span className="text-xs font-semibold text-royal">
-                          {s.index}
-                        </span>
+                        <span className="font-mono text-xs text-white/35">{s.index}</span>
                         {s.title}
                       </Link>
                     </li>
@@ -318,38 +310,20 @@ export function Navbar() {
                 </ul>
               </div>
 
-              <div className="mt-8 space-y-3">
-                <Button
-                  href="https://crm.codeskate.com"
-                  external
-                  variant="primary"
-                  size="lg"
-                  className="w-full"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <Zap className="h-4 w-4 fill-current" />
-                    Try CodeSkate CRM
-                  </span>
+              <div className="mt-8 grid grid-cols-2 gap-3">
+                <Button href="/login" variant="night" size="lg">
+                  Log in
                 </Button>
-                <Button
-                  href={`tel:${site.phone.replace(/\s/g, "")}`}
-                  external
-                  variant="secondary"
-                  size="lg"
-                  className="w-full"
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <Phone className="h-4 w-4" />
-                    Call Now
-                  </span>
+                <Button href="/contact" variant="glow" size="lg">
+                  Start a project
                 </Button>
-                <a
-                  href={`mailto:${site.email}`}
-                  className="mt-2 block text-center text-sm text-ink-muted"
-                >
-                  {site.email}
-                </a>
               </div>
+              <a
+                href={`mailto:${site.email}`}
+                className="mt-6 block text-center font-mono text-xs text-white/40"
+              >
+                {site.email}
+              </a>
             </div>
           </motion.div>
         )}

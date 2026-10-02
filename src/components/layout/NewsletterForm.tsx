@@ -18,17 +18,17 @@ export function NewsletterForm() {
 
   return (
     <form onSubmit={submit} className="w-full max-w-xs">
-      <label className="text-xs font-medium text-ink-muted">
+      <label className="font-mono text-[0.7rem] uppercase tracking-wider text-white/40">
         The CodeSkate dispatch — monthly, no fluff.
       </label>
-      <div className="mt-2 flex items-center rounded-full border border-line bg-surface p-1 pl-4 shadow-soft transition-colors focus-within:border-royal/40">
+      <div className="mt-2 flex items-center rounded-full border border-white/10 bg-white/[0.04] p-1 pl-4 transition-colors focus-within:border-royal/50">
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@company.com"
-          className="w-full bg-transparent text-sm text-ink placeholder:text-ink-faint focus:outline-none"
+          className="w-full bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
           aria-label="Email address"
         />
         <button
@@ -40,7 +40,7 @@ export function NewsletterForm() {
         </button>
       </div>
       {done && (
-        <p className="mt-2 text-xs text-success">You&apos;re in. Watch your inbox.</p>
+        <p className="mt-2 text-xs text-emerald-400">You&apos;re in. Watch your inbox.</p>
       )}
     </form>
   );

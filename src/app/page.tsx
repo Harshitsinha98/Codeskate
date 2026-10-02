@@ -1,31 +1,26 @@
-import { Hero } from "@/components/sections/Hero";
-import { TrustBar } from "@/components/sections/TrustBar";
-import { ServicesShowcase } from "@/components/sections/ServicesShowcase";
-import { SpecialOffer } from "@/components/sections/SpecialOffer";
-import { WhyCodeskate } from "@/components/sections/WhyCodeskate";
-import { GrowthSection } from "@/components/sections/GrowthSection";
-import { TechStack } from "@/components/sections/TechStack";
-import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
-import { FeaturedWork } from "@/components/sections/FeaturedWork";
-import { CrmHighlight } from "@/components/sections/CrmHighlight";
-import { ClientDashboardPreview } from "@/components/sections/ClientDashboardPreview";
+import { HeroNight } from "@/components/home/HeroNight";
+import { ProofStrip } from "@/components/home/ProofStrip";
+import { ServicesBento } from "@/components/home/ServicesBento";
+import { WorkShowcase } from "@/components/home/WorkShowcase";
+import { ProductSection } from "@/components/home/ProductSection";
+import { ProcessStepper } from "@/components/home/ProcessStepper";
 import { FAQ } from "@/components/sections/FAQ";
 import { CTA } from "@/components/sections/CTA";
 
+/**
+ * Homepage — 8 sections, dark/light rhythm:
+ * Hero (dark) → Proof (dark) → Services bento (dark) → Work (light)
+ * → Product (dark) → Process (light) → FAQ (light) → CTA (dark).
+ */
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <TrustBar />
-      <ServicesShowcase />
-      <SpecialOffer />
-      <WhyCodeskate />
-      <GrowthSection />
-      <ProcessTimeline />
-      <FeaturedWork />
-      <CrmHighlight />
-      <TechStack />
-      <ClientDashboardPreview />
+      <HeroNight />
+      <ProofStrip />
+      <ServicesBento />
+      <WorkShowcase />
+      <ProductSection />
+      <ProcessStepper />
       <FAQ />
       <CTA />
     </>

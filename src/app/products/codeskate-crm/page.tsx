@@ -78,10 +78,10 @@ export default function CodeSkateCrmPage() {
         description="CodeSkate CRM is a lead-management platform with a native call tracker and WhatsApp automation — purpose-built for teams that live on the phone."
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Button href={enquire} variant="primary" size="lg" external>
+          <Button href={enquire} variant="glow" size="lg" external>
             Enquire on WhatsApp
           </Button>
-          <Button href={DEMO_URL} variant="secondary" size="lg" external>
+          <Button href={DEMO_URL} variant="night" size="lg" external>
             Open live demo
           </Button>
         </div>

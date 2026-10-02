@@ -182,8 +182,7 @@ export const caseMeta: Record<string, CaseMeta> = {
     solution: "An SEO-optimized site with booking and a lead-capture funnel.",
     tech: ["Next.js", "Tailwind", "Sanity CMS", "Resend"],
     result: "Generating real inbound leads",
-    image:
-      "https://s.wordpress.com/mshots/v1/https://sarantaxsolution.com?w=800&h=450",
+    image: "/work/saran-tax-solution.jpg",
   },
   "pragat-hanuman-ji": {
     slug: "pragat-hanuman-ji",
@@ -192,8 +191,7 @@ export const caseMeta: Record<string, CaseMeta> = {
     solution: "A devotional site with a calendar, donations and a gallery.",
     tech: ["Next.js", "Tailwind", "Razorpay", "Cloudinary"],
     result: "Live in production",
-    image:
-      "https://s.wordpress.com/mshots/v1/https://pragathanumanji.in?w=800&h=450",
+    image: "/work/pragat-hanuman-ji.jpg",
   },
   "shivis-elegance": {
     slug: "shivis-elegance",
@@ -202,8 +200,7 @@ export const caseMeta: Record<string, CaseMeta> = {
     solution: "A customer store and a separate admin dashboard with auto-shipping.",
     tech: ["Next.js", "Express", "PostgreSQL", "Razorpay", "Shiprocket"],
     result: "End-to-end order lifecycle live",
-    image:
-      "https://s.wordpress.com/mshots/v1/https://shivis-elegance1.vercel.app?w=800&h=450",
+    image: "/work/shivis-elegance.jpg",
   },
 };
 

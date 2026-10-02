@@ -23,7 +23,7 @@ export function FAQ() {
   };
 
   return (
-    <section className="border-b border-line bg-base py-20 md:py-28">
+    <section className="bg-base py-24 md:py-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
@@ -32,7 +32,7 @@ export function FAQ() {
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <SectionHeading
-              eyebrow="Questions"
+              eyebrow="FAQ"
               title="Everything you're wondering."
               description="Still unsure about something? A fifteen-minute call will answer it faster than any FAQ."
             />
@@ -50,7 +50,7 @@ export function FAQ() {
                 <Reveal key={faq.q} delay={Math.min(i * 0.03, 0.15)}>
                   <div
                     className={`rounded-2xl border bg-surface transition-all duration-300 ${
-                      isOpen ? "border-royal/30 shadow-lift" : "border-line shadow-soft"
+                      isOpen ? "border-ink/15 shadow-soft" : "border-line hover:border-ink/10"
                     }`}
                   >
                     <button
@@ -58,13 +58,13 @@ export function FAQ() {
                       className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left"
                       aria-expanded={isOpen}
                     >
-                      <span className="text-base font-semibold tracking-tight text-ink md:text-lg">
+                      <span className="text-base font-medium tracking-tight text-ink md:text-[1.05rem]">
                         {faq.q}
                       </span>
                       <span
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
                           isOpen
-                            ? "rotate-45 border-royal bg-royal text-white"
+                            ? "rotate-45 border-ink bg-ink text-white"
                             : "border-line text-ink-muted"
                         }`}
                       >

@@ -36,7 +36,7 @@ export function SectionHeading({
       <Reveal delay={0.05}>
         <h2
           className={cn(
-            "text-display-lg font-bold text-ink max-w-3xl",
+            "text-display-lg font-semibold text-ink max-w-3xl",
             align === "center" && "mx-auto",
             titleClassName
           )}

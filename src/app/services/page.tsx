@@ -23,7 +23,7 @@ export default function ServicesPage() {
         title="Everything you need to build and scale."
         description="We're a full-stack product engineering company. From the first line of strategy to the last point of growth, every discipline is held to the same standard — and pointed at the same goal: your business."
       >
-        <Button href="/contact" variant="primary" size="lg" arrow magnetic>
+        <Button href="/contact" variant="glow" size="lg" arrow magnetic>
           Start Your Project
         </Button>
       </PageHeader>
